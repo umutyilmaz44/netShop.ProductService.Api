@@ -1,0 +1,12 @@
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/bin/Debug/net5.0/netShop.Domain.deps.json
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/bin/Debug/net5.0/netShop.Domain.dll
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/bin/Debug/net5.0/ref/netShop.Domain.dll
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/bin/Debug/net5.0/netShop.Domain.pdb
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.csproj.AssemblyReference.cache
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.AssemblyInfoInputs.cache
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.AssemblyInfo.cs
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.csproj.CoreCompileInputs.cache
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.dll
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/ref/netShop.Domain.dll
+/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Domain/obj/Debug/net5.0/netShop.Domain.pdb

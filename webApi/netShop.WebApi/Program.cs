@@ -11,6 +11,20 @@ namespace netShop.WebApi
 {
     public class Program
     {
+        private static IConfiguration Configuration
+        {
+            get
+            {
+                String env = Environment.GetEnvironmentVariable("APSNETCORE_ENVIRONMENT");
+                return new ConfigurationBuilder()
+                            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json", optional:false)
+                            .AddJsonFile($"appsettings.{env}.json", optional:true)
+                            .AddEnvironmentVariables()
+                            .Build();
+            }
+        }
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -20,7 +34,10 @@ namespace netShop.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseConfiguration(Configuration);
                     webBuilder.UseStartup<Startup>();
                 });
+
+        
     }
 }

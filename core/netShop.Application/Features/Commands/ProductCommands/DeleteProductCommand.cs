@@ -10,7 +10,7 @@ using netShop.Application.Wrappers;
 using netShop.Domain.Common;
 using netShop.Domain.Entities;
 
-namespace netShop.Application.Features.Commands
+namespace netShop.Application.Features.Commands.ProductCommands
 {
     public class DeleteProductCommand : BaseEntity, IRequest<Response<Unit>>
     {        

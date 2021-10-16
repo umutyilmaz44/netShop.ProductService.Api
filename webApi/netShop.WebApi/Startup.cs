@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 
 using netShop.Application;
 using netShop.Persistence;
+using netShop.WebApi.Middlewares;
 
 namespace netShop.WebApi
 {
@@ -50,6 +51,7 @@ namespace netShop.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "netShop.WebApi v1"));
             }
 
+            app.UseCustomExceptionHandler();
             app.UseHealthChecks("/api/healthcheck", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
             {
                 ResponseWriter = async(context, report) => 

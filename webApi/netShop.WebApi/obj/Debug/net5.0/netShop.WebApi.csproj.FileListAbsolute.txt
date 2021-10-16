@@ -48,3 +48,4 @@
 /Users/devos/Projects/netCore-Projects/netShop/webApi/netShop.WebApi/bin/Debug/net5.0/FluentValidation.dll
 /Users/devos/Projects/netCore-Projects/netShop/webApi/netShop.WebApi/bin/Debug/net5.0/FluentValidation.AspNetCore.dll
 /Users/devos/Projects/netCore-Projects/netShop/webApi/netShop.WebApi/bin/Debug/net5.0/FluentValidation.DependencyInjectionExtensions.dll
+/Users/devos/Projects/netCore-Projects/netShop/webApi/netShop.WebApi/bin/Debug/net5.0/Newtonsoft.Json.dll

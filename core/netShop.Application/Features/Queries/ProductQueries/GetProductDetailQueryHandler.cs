@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using netShop.Application.Dtos;
+using netShop.Application.Exceptions;
 using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Validators;
 using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 
-namespace netShop.Application.Features.Queries
+namespace netShop.Application.Features.Queries.ProductQueries
 {
     public class GetProductDetailQueryHandler : IRequestHandler<GetProductDetailQuery, Response<ProductDto>>
     {
@@ -24,15 +25,12 @@ namespace netShop.Application.Features.Queries
             this.unitOfWork = unitOfWork;
         }
         public async Task<Response<ProductDto>> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
-        {
-            GetProductDetailQueryValidator validator = new GetProductDetailQueryValidator();
-            var validationResult = validator.Validate(request);
-            if (!validationResult.IsValid)
-            {
-                return new PagedResponse<ProductDto>("Validation Error", validationResult.Errors.Select( x => x.ErrorMessage).ToArray());
-            }
-            
+        {            
             Product entity = await this.unitOfWork.productRepository.GetByIdAsync(request.Id);
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Product), request.Id);
+            }
 
             return new Response<ProductDto>(this.mapper.Map<ProductDto>(entity));
         }

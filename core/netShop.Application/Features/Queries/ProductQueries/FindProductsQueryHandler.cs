@@ -13,7 +13,7 @@ using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 using netShop.Application.Validators;
 
-namespace netShop.Application.Features.Queries
+namespace netShop.Application.Features.Queries.ProductQueries
 {
     public class FindProductsQueryHandler : IRequestHandler<FindProductsQuery, PagedResponse<List<ProductDto>>>
     {
@@ -28,26 +28,38 @@ namespace netShop.Application.Features.Queries
 
         public async Task<PagedResponse<List<ProductDto>>> Handle(FindProductsQuery request, CancellationToken cancellationToken)
         {            
-            FindProductsQueryValidator validator = new FindProductsQueryValidator();
-            // var validationResult = ValidatorCheck.Validate<FindProductsQuery, PagedResponse<List<ProductDto>>>(validator, request);
-            // if(validationResult != null)
-            //     return (PagedResponse<List<ProductDto>>)validationResult;
-
-            var validationResult = validator.Validate(request);
-            if (!validationResult.IsValid)
-            {
-                return new PagedResponse<List<ProductDto>>("Validation Error", validationResult.Errors.Select( x => $"{x.ErrorCode} : {x.ErrorMessage}").ToArray());
-            }
+            // FindProductsQueryValidator validator = new FindProductsQueryValidator();
+            // var validationResult = validator.Validate(request);
+            // if (!validationResult.IsValid)
+            // {
+            //     return new PagedResponse<List<ProductDto>>("Validation Error", validationResult.Errors.Select( x => $"{x.ErrorCode} : {x.ErrorMessage}").ToArray());
+            // }
 
             Expression<Func<Product, bool>> filter = PredicateBuilder.New<Product>(true);
             var original = filter;
 
             if (!string.IsNullOrEmpty(request.ProductCode))
                 filter = filter.And(x => x.productCode.Contains(request.ProductCode));
+            
             if (!string.IsNullOrEmpty(request.ProductName))
                 filter = filter.And(x => x.productName.Contains(request.ProductName));
+            
             if (!string.IsNullOrEmpty(request.Description))
                 filter = filter.And(x => x.description.Contains(request.Description));
+            
+            if (request.Price.HasValue)
+                filter = filter.And(x => x.price == request.Price.Value);
+            if (request.PriceLowerThan.HasValue)
+                filter = filter.And(x => x.price <= request.PriceLowerThan.Value);
+            if (request.PriceGreaterThan.HasValue)
+                filter = filter.And(x => x.price >= request.PriceGreaterThan.Value);
+            
+            if (request.Quantity.HasValue)
+                filter = filter.And(x => x.quantity == request.Quantity.Value);
+            if (request.QuantityLowerThan.HasValue)
+                filter = filter.And(x => x.quantity <= request.QuantityLowerThan.Value);
+            if (request.QuantityGreaterThan.HasValue)
+                filter = filter.And(x => x.quantity >= request.QuantityGreaterThan.Value);
 
             if (filter == original)
                 filter = x => true;

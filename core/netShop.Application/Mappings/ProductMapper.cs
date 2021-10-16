@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text; 
 using AutoMapper;
-using netShop.Application.Features.Commands;
-using netShop.Application.Features.Queries;
+using netShop.Application.Features.Commands.ProductCommands;
+using netShop.Application.Features.Queries.ProductQueries;
 
 namespace netShop.Application.Mappings
 {

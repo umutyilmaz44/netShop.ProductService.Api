@@ -1,17 +1,21 @@
+using System.Collections.Generic;
+
 namespace netShop.Application.Wrappers
 {
     public interface IResponse
     {
         bool Succeeded { get; set; }
-        string[] Errors { get; set; }
-        string Message { get; set; }
+
+        string FailureType { get; set; }
+        IDictionary<string, string[]> Failures { get; }
     }
     public class Response<T> : IResponse
     {
         public T Data { get; set; }
         public bool Succeeded { get; set; } = false;
-        public string[] Errors { get; set; }
-        public string Message { get; set; }
+
+        public string FailureType { get; set; }
+        public IDictionary<string, string[]> Failures { get; }
 
         public Response()
         {
@@ -19,24 +23,14 @@ namespace netShop.Application.Wrappers
         public Response(T data)
         {
             Succeeded = true;
-            Message = string.Empty;
-            Errors = null;
             Data = data;
         }
 
-        public Response(string message)
+        public Response(string failureType, IDictionary<string, string[]> failures)
         {
-            Succeeded = false;
-            Message = message;
-            Errors = null;
-            Data = default(T);
-        }
-
-        public Response(string message, string[] errors)
-        {
-            Succeeded = false;
-            Message = message;
-            Errors = errors;
+            this.Succeeded = false;
+            this.Failures = failures;
+            this.FailureType = failureType;
             Data = default(T);
         }
     }

@@ -1,7 +1,7 @@
 using FluentValidation;
-using netShop.Application.Features.Queries;
+using netShop.Application.Features.Queries.ProductQueries;
 
-namespace netShop.Application.Validators
+namespace netShop.Application.Validators.ProductValidators
 {
     public class GetProductDetailQueryValidator : AbstractValidator<GetProductDetailQuery>
     {

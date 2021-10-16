@@ -10,16 +10,14 @@ using netShop.Application.Wrappers;
 using netShop.Domain.Common;
 using netShop.Domain.Entities;
 
-namespace netShop.Application.Features.Commands
+namespace netShop.Application.Features.Commands.ProductCommands
 {
     public class UpdateProductCommand : BaseEntity, IRequest<Response<Unit>>
     {
-        public string ProductCode { get; set; }
-        public string ProductName { get; set; }
-        public string Description { get; set; }
-
-        public double Price { get; set; }
-
-        public int Quantity { get; set; }
+        public String ProductCode { get; set; }
+        public String ProductName { get; set; }
+        public String Description { get; set; }
+        public Double Price { get; set; }
+        public Int32 Quantity { get; set; }
     }
 }

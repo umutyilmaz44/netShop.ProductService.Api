@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Y2sTr+kkdezzKsCEzjkhBlPVOwuS+E2gLjqqsUEKH8ySgIDOhOatDX30Utz3csXZP8q2XY6j/2grRQT9xTTW7Q==",
+  "dgSpecHash": "WJO+WKgMQOHolcK8NSC4n2nNHPQff8NbiMTXi3QPuqcBT7fbwTUu6J8R8lXSsHhOT14alAirl/plg+huwIj5yg==",
   "success": true,
   "projectFilePath": "/Users/devos/Projects/netCore-Projects/netShop/webApi/netShop.WebApi/netShop.WebApi.csproj",
   "expectedPackageFiles": [
@@ -28,6 +28,7 @@
     "/Users/devos/.nuget/packages/microsoft.extensions.options/5.0.0/microsoft.extensions.options.5.0.0.nupkg.sha512",
     "/Users/devos/.nuget/packages/microsoft.extensions.primitives/5.0.0/microsoft.extensions.primitives.5.0.0.nupkg.sha512",
     "/Users/devos/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/devos/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
     "/Users/devos/.nuget/packages/npgsql/5.0.10/npgsql.5.0.10.nupkg.sha512",
     "/Users/devos/.nuget/packages/npgsql.entityframeworkcore.postgresql/5.0.10/npgsql.entityframeworkcore.postgresql.5.0.10.nupkg.sha512",
     "/Users/devos/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",

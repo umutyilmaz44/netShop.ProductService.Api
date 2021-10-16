@@ -18,16 +18,10 @@ namespace netShop.Application.Wrappers
             this.Data = data;
             this.TotalCount = totalCount;
             this.TotalPages = (int)(totalCount / pageSize) + 1;
-            this.Message = null;
             this.Succeeded = true;
-            this.Errors = null;
         }
 
-        public PagedResponse(string message, string[] errors) : base(message, errors)
-        {
-        }
-
-        public PagedResponse(string message) : base(message)
+        public PagedResponse(string failureType, IDictionary<string, string[]> failures) : base(failureType, failures)
         {
         }
 

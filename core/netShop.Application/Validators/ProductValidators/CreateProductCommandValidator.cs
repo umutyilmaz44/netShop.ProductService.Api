@@ -1,7 +1,7 @@
 using FluentValidation;
-using netShop.Application.Features.Commands;
+using netShop.Application.Features.Commands.ProductCommands;
 
-namespace netShop.Application.Validators
+namespace netShop.Application.Validators.ProductValidators
 {
     public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
     {

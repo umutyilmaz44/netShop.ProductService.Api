@@ -9,10 +9,11 @@ using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 
-namespace netShop.Application.Features.Commands
+namespace netShop.Application.Features.Queries.ProductQueries
 {
-    public class CreateProductCommand : IRequest<Response<ProductDto>>
+    public class GetProductDetailQuery : IRequest<Response<ProductDto>>
     {
+        public Guid Id { get; set; }        
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }

@@ -10,7 +10,7 @@ namespace netShop.Application.Wrappers
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
         public long TotalCount { get; set; }
-       
+
         public PagedResponse(T data, int currentPage, int pageSize, long totalCount) : base(data)
         {
             this.CurrentPage = currentPage;
@@ -21,6 +21,14 @@ namespace netShop.Application.Wrappers
             this.Message = null;
             this.Succeeded = true;
             this.Errors = null;
+        }
+
+        public PagedResponse(string message, string[] errors) : base(message, errors)
+        {
+        }
+
+        public PagedResponse(string message) : base(message)
+        {
         }
 
         public static implicit operator PagedResponse<T>(PagedResponse<IEnumerable<Product>> v)

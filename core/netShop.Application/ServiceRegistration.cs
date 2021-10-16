@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection; 
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using FluentValidation.AspNetCore;
 
 namespace netShop.Application
 {
@@ -15,6 +16,12 @@ namespace netShop.Application
             
             services.AddAutoMapper(assmb);
             services.AddMediatR(assmb);
+            services.AddFluentValidation(fv =>
+            {
+                fv.ImplicitlyValidateChildProperties = true;
+                fv.ImplicitlyValidateRootCollectionElements = true;                
+                fv.RegisterValidatorsFromAssembly(assmb);
+            });
         }
     }
 }

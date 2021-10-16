@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "2t9MccFmQgEvr/GzX8sP91nGsCdRmKBLQhPmnyC6fG9v5J4HdFTyV3EpBggJWTjad8h+Eg1bZX0/KymtHQkYuA==",
+  "dgSpecHash": "+UldRsFkoiic0CCGyFuLBf7ij8qfWsP31kxIUcj2c36J7W83pjq3f2op/pThi+QeEu1N68u2a4lqG3zpGbYMXw==",
   "success": true,
   "projectFilePath": "/Users/devos/Projects/netCore-Projects/netShop/core/netShop.Application/netShop.Application.csproj",
   "expectedPackageFiles": [
     "/Users/devos/.nuget/packages/automapper/10.1.1/automapper.10.1.1.nupkg.sha512",
     "/Users/devos/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/8.1.1/automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
+    "/Users/devos/.nuget/packages/fluentvalidation/10.3.3/fluentvalidation.10.3.3.nupkg.sha512",
+    "/Users/devos/.nuget/packages/fluentvalidation.aspnetcore/10.3.3/fluentvalidation.aspnetcore.10.3.3.nupkg.sha512",
+    "/Users/devos/.nuget/packages/fluentvalidation.dependencyinjectionextensions/10.3.3/fluentvalidation.dependencyinjectionextensions.10.3.3.nupkg.sha512",
     "/Users/devos/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
     "/Users/devos/.nuget/packages/linqkit.microsoft.entityframeworkcore/5.0.26/linqkit.microsoft.entityframeworkcore.5.0.26.nupkg.sha512",
     "/Users/devos/.nuget/packages/mediatr/9.0.0/mediatr.9.0.0.nupkg.sha512",

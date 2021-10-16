@@ -11,6 +11,7 @@ using netShop.Application.Dtos;
 using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
+using netShop.Application.Validators;
 
 namespace netShop.Application.Features.Queries
 {
@@ -27,6 +28,14 @@ namespace netShop.Application.Features.Queries
 
         public async Task<PagedResponse<List<ProductDto>>> Handle(FindProductsQuery request, CancellationToken cancellationToken)
         {
+            FindProductsQueryValidator validator = new FindProductsQueryValidator();
+            var validationResult = validator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return new PagedResponse<List<ProductDto>>("", validationResult.Errors.Select( x => x.ErrorMessage).ToArray());
+            }
+
             Expression<Func<Product, bool>> filter = PredicateBuilder.New<Product>(true);
             var original = filter;
 

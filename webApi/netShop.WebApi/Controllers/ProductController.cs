@@ -17,7 +17,7 @@ namespace netShop.WebApi.Controllers
     public class ProductsController : BaseController
     {
         [HttpPost]
-        [AllowAnonymous]
+        // [AllowAnonymous]
         public async Task<ActionResult<PagedResponse<List<ProductDto>>>> Find([FromBody] FindProductsQuery request, [FromQuery] int page=0, int size=10)
         {
             var vm = await Mediator.Send(request);
@@ -26,7 +26,7 @@ namespace netShop.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        // [AllowAnonymous]
         public async Task<ActionResult<ProductDto>> Get(Guid id)
         {
             var vm = await Mediator.Send(new GetProductDetailQuery { Id = id });

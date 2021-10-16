@@ -27,13 +27,16 @@ namespace netShop.Application.Features.Queries
         }
 
         public async Task<PagedResponse<List<ProductDto>>> Handle(FindProductsQuery request, CancellationToken cancellationToken)
-        {
+        {            
             FindProductsQueryValidator validator = new FindProductsQueryValidator();
-            var validationResult = validator.Validate(request);
+            // var validationResult = ValidatorCheck.Validate<FindProductsQuery, PagedResponse<List<ProductDto>>>(validator, request);
+            // if(validationResult != null)
+            //     return (PagedResponse<List<ProductDto>>)validationResult;
 
+            var validationResult = validator.Validate(request);
             if (!validationResult.IsValid)
             {
-                return new PagedResponse<List<ProductDto>>("", validationResult.Errors.Select( x => x.ErrorMessage).ToArray());
+                return new PagedResponse<List<ProductDto>>("Validation Error", validationResult.Errors.Select( x => $"{x.ErrorCode} : {x.ErrorMessage}").ToArray());
             }
 
             Expression<Func<Product, bool>> filter = PredicateBuilder.New<Product>(true);

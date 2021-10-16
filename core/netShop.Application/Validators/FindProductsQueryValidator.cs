@@ -7,8 +7,13 @@ namespace netShop.Application.Validators
     {
         public FindProductsQueryValidator()
         {
-            RuleFor(x => x.ProductCode).NotNull().NotEmpty().WithMessage("Please specify a valid product code.");
-            RuleFor(x => x.ProductName).NotNull().NotEmpty().Length(3, 250).WithMessage("Please specify a product name.");
+            RuleFor(x => x.ProductCode)
+                .NotNull().WithErrorCode("PQ-E-PC-001")
+                .NotEmpty().WithErrorCode("PQ-E-PC-002"); //.WithMessage("Please specify a valid product code.");
+            RuleFor(x => x.ProductName)
+                .NotNull().WithErrorCode("PQ-E-PN-003")
+                .NotEmpty().WithErrorCode("PQ-E-PN-004")
+                .Length(3, 250).WithErrorCode("PQ-E-PN-005"); //.WithMessage("Please specify a product name.");
             
             // Complex Properties
             // RuleFor(x => x.Address).InjectValidator();

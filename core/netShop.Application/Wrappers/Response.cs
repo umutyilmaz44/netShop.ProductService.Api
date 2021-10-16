@@ -1,6 +1,12 @@
 namespace netShop.Application.Wrappers
 {
-    public class Response<T>
+    public interface IResponse
+    {
+        bool Succeeded { get; set; }
+        string[] Errors { get; set; }
+        string Message { get; set; }
+    }
+    public class Response<T> : IResponse
     {
         public T Data { get; set; }
         public bool Succeeded { get; set; } = false;

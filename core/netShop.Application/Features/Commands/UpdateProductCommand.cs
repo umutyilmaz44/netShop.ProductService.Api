@@ -6,11 +6,13 @@ using AutoMapper;
 using MediatR;
 using netShop.Application.Dtos;
 using netShop.Application.Interfaces.Repository.Base;
+using netShop.Application.Wrappers;
+using netShop.Domain.Common;
 using netShop.Domain.Entities;
 
 namespace netShop.Application.Features.Commands
 {
-    public class UpdateProductCommand : IRequest
+    public class UpdateProductCommand : BaseEntity, IRequest<Response<Unit>>
     {
         public string ProductCode { get; set; }
         public string ProductName { get; set; }

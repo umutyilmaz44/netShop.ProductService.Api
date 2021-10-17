@@ -14,7 +14,7 @@ namespace netShop.Persistence
         public static void AddPersistenceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options => 
-                        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("netShop.Persistence")));
+                        options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()) ;  
             services.AddScoped<IUnitOfWork>(provider => provider.GetService<UnitOfWork>()) ;   

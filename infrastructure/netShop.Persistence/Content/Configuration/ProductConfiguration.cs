@@ -12,7 +12,20 @@ namespace netShop.Persistence.Content.Configuration
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            //builder.Property(s => s.productCode)
+            builder.ToTable("products");
+
+            builder.Property(s => s.Id)
+                .HasColumnName("id")
+                .UseIdentityColumn()
+                .IsRequired();
+
+            builder.Property(s => s.productCode)
+                .HasColumnName("product_code")
+                .IsRequired();
+
+            builder.Property(s => s.productName)
+                .HasColumnName("product_name")
+                .IsRequired();
         }
     }
 }

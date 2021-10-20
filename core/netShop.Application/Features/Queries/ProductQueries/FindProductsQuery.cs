@@ -11,6 +11,7 @@ using netShop.Application.Dtos;
 using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
+using System.Text.Json.Serialization;
 
 namespace netShop.Application.Features.Queries.ProductQueries
 {
@@ -27,5 +28,10 @@ namespace netShop.Application.Features.Queries.ProductQueries
         public Int32? Quantity { get; set; }     
         public Int32? QuantityLowerThan { get; set; }
         public Int32? QuantityGreaterThan { get; set; }   
+
+        [JsonIgnore]
+        public Int32? Page { get; set; } 
+        [JsonIgnore]  
+        public Int32? PageSize { get; set; }   
     }
 }

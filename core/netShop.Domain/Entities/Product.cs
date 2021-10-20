@@ -14,6 +14,11 @@ namespace netShop.Domain.Entities
 
         public int quantity { get; set; }
 
+
+        public Product()
+        {
+            
+        }
         public Product (Guid id, string productCode, string productName, string description, double price, int quantity) {
             this.Id = id;
             this.productCode = productCode;

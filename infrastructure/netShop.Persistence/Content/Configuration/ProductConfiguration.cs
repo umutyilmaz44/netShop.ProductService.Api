@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory.ValueGeneration.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using netShop.Domain.Entities;
@@ -14,9 +15,13 @@ namespace netShop.Persistence.Content.Configuration
         {
             builder.ToTable("products");
 
+
             builder.Property(s => s.Id)
                 .HasColumnName("id")
-                .UseIdentityColumn()
+                // FOR INMEMORY
+                .HasValueGenerator<GuidValueGenerator>()
+                // FOR POSTGRESQL
+                // .UseIdentityColumn<Guid>()
                 .IsRequired();
 
             builder.Property(s => s.productCode)

@@ -33,8 +33,8 @@ namespace netShop.Persistence.Repositories.Base
                                         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
                                         string includeProperties = "", int? pageIndex = null, int? pageSize = null)
         {
-            // if(string.IsNullOrEmpty(includeProperties))
-            //     includeProperties = "";
+            if(string.IsNullOrEmpty(includeProperties))
+                includeProperties = "";
 
             IEnumerable<T> dataList;
             IQueryable<T> query = dbContext.Set<T>();

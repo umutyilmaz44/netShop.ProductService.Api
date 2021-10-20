@@ -13,11 +13,13 @@ namespace netShop.Persistence
     {
         public static void AddPersistenceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
+            // services.AddDbContext<ApplicationDbContext>(options => 
+            //             options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
             services.AddDbContext<ApplicationDbContext>(options => 
-                        options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
+                        options.UseInMemoryDatabase(databaseName: "netShopDb"));
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()) ;  
-            services.AddScoped<IUnitOfWork>(provider => provider.GetService<UnitOfWork>()) ;   
+            services.AddScoped<IUnitOfWork, UnitOfWork>() ;   
         }
     }
 }

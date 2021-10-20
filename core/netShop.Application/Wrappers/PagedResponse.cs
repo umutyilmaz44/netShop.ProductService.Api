@@ -17,17 +17,16 @@ namespace netShop.Application.Wrappers
             this.PageSize = pageSize;
             this.Data = data;
             this.TotalCount = totalCount;
-            this.TotalPages = (int)(totalCount / pageSize) + 1;
+            this.TotalPages = (totalCount == 0 || pageSize == 0) 
+                            ? 0 
+                            : ((double)totalCount / (double)pageSize) * pageSize ==  totalCount 
+                                ? (int)(totalCount / pageSize) + 1
+                                : (int)(totalCount / pageSize);
             this.Succeeded = true;
         }
 
         public PagedResponse(string failureType, IDictionary<string, string[]> failures) : base(failureType, failures)
         {
-        }
-
-        public static implicit operator PagedResponse<T>(PagedResponse<IEnumerable<Product>> v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

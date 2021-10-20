@@ -25,13 +25,6 @@ namespace netShop.Application.Features.Commands.ProductCommands
         }
         public async Task<Response<ProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            // CreateProductCommandValidator validator = new CreateProductCommandValidator();
-            // var validationResult = validator.Validate(request);
-            // if (!validationResult.IsValid)
-            // {
-            //     return new PagedResponse<ProductDto>("Validation Error", validationResult.Errors.Select(x => $"{x.ErrorCode} : {x.ErrorMessage}").ToArray());
-            // }
-
             Product entity = await this.unitOfWork.productRepository.AddAsync(this.mapper.Map<Product>(request));
             await this.unitOfWork.CommitAsync();
             return new Response<ProductDto>(this.mapper.Map<ProductDto>(entity));

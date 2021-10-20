@@ -64,7 +64,7 @@ namespace netShop.Application.Features.Queries.ProductQueries
             if (filter == original)
                 filter = x => true;
 
-            PagedResponse<List<Product>> pagedEntities = await this.unitOfWork.productRepository.FindAsync(filter);
+            PagedResponse<IEnumerable<Product>> pagedEntities = await this.unitOfWork.productRepository.FindAsync(filter, pageIndex: request.Page, pageSize: request.PageSize);
             PagedResponse<List<ProductDto>> pagedDtos = new PagedResponse<List<ProductDto>>(
                                                                     pagedEntities.Data.Select(entity => this.mapper.Map<ProductDto>(entity)).ToList(),
                                                                     pagedEntities.CurrentPage, pagedEntities.PageSize, pagedEntities.TotalCount);

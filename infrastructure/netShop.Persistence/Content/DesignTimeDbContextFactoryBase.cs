@@ -46,7 +46,8 @@ namespace netShop.Persistence.Content
 
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
 
-            optionsBuilder.UseNpgsql(connectionString);
+            //optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder.UseInMemoryDatabase(databaseName: "netShopDb");
 
             return CreateNewInstance(optionsBuilder.Options);
         }

@@ -39,13 +39,13 @@ namespace netShop.Application.Features.Queries.ProductQueries
             var original = filter;
 
             if (!string.IsNullOrEmpty(request.ProductCode))
-                filter = filter.And(x => x.productCode.Contains(request.ProductCode));
+                filter = filter.And(x => x.productCode.Contains(request.ProductCode, StringComparison.InvariantCultureIgnoreCase));
             
             if (!string.IsNullOrEmpty(request.ProductName))
-                filter = filter.And(x => x.productName.Contains(request.ProductName));
+                filter = filter.And(x => x.productName.Contains(request.ProductName, StringComparison.InvariantCultureIgnoreCase));
             
             if (!string.IsNullOrEmpty(request.Description))
-                filter = filter.And(x => x.description.Contains(request.Description));
+                filter = filter.And(x => x.description.Contains(request.Description, StringComparison.InvariantCultureIgnoreCase));
             
             if (request.Price.HasValue)
                 filter = filter.And(x => x.price == request.Price.Value);

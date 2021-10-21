@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using netShop.Domain.Common;
 
 namespace netShop.Application.Dtos
 {
-    public class ProductDto
+    public class ProductDto : BaseEntity
     {
-        public Guid Id { get; set; }
         public string productCode { get; set; }
         public string productName { get; set; }
         public string description { get; set; }

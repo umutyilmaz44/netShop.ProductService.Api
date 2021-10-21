@@ -70,10 +70,5 @@ namespace netShop.Application.Features.Queries.ProductQueries
                                                                     pagedEntities.CurrentPage, pagedEntities.PageSize, pagedEntities.TotalCount);
             return pagedDtos;
         }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
     }
 }

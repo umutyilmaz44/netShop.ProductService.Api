@@ -34,7 +34,7 @@ namespace netShop.Application.Features.Commands.ProductCommands
                 throw new NotFoundException(nameof(Product), request.Id);
             }
 
-            await this.unitOfWork.productRepository.DeleteAsync(this.mapper.Map<Product>(entity));
+            await this.unitOfWork.productRepository.DeleteAsync(entity);
             await this.unitOfWork.CommitAsync();
             return new Response<Unit>(Unit.Value);
         }

@@ -15,8 +15,11 @@ namespace netShop.Persistence
         {
             // services.AddDbContext<ApplicationDbContext>(options => 
             //             options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
-            services.AddDbContext<ApplicationDbContext>(options => 
-                        options.UseInMemoryDatabase(databaseName: "netShopDb"));
+            services.AddDbContext<ApplicationDbContext>(options => {
+                        options.UseInMemoryDatabase(databaseName: "netShopDb");
+                        // Logging sql 
+                        // options.EnableSensitiveDataLogging();
+            });
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()) ;  
             services.AddScoped<IUnitOfWork, UnitOfWork>() ;   

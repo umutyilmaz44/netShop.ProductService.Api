@@ -15,7 +15,6 @@ namespace netShop.Persistence.Content.Configuration
         {
             builder.ToTable("products");
 
-
             builder.Property(s => s.Id)
                 .HasColumnName("id")
                 // FOR INMEMORY

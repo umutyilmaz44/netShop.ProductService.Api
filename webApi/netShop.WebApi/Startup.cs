@@ -33,7 +33,8 @@ namespace netShop.WebApi
         {
             services.AddApplicationRegistration();
             services.AddPersistenceRegistration(Configuration);
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {

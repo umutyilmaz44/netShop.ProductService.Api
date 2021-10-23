@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using netShop.Application.Dtos;
 using netShop.Application.Features.Commands.ProductCommands;
@@ -18,7 +19,7 @@ namespace netShop.WebApi.Controllers
     {
         [HttpPost]
         // [AllowAnonymous]
-        public async Task<ActionResult<PagedResponse<List<ProductDto>>>> Find([FromBody] FindProductsQuery request, [FromQuery] int page=0, int size=10)
+        public async Task<ActionResult<PagedResponse<List<ProductDto>>>> Find([FromBody] FindProductsQuery request, [FromQuery] int page = 0, int size = 10)
         {
             request.Page = page;
             request.PageSize = size;
@@ -54,6 +55,17 @@ namespace netShop.WebApi.Controllers
             return NoContent();
         }
 
+        [HttpPatch("{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<ProductDto> patchDto)
+        {
+            PatchProductCommand request = new PatchProductCommand(id, patchDto, ModelState);
+            await Mediator.Send(request);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
@@ -62,6 +74,6 @@ namespace netShop.WebApi.Controllers
             await Mediator.Send(new DeleteProductCommand { Id = id });
 
             return NoContent();
-        }        
+        }
     }
 }

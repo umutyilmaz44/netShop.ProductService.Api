@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using netShop.Persistence;
 
 namespace netShop.WebApi
 {
@@ -18,8 +19,8 @@ namespace netShop.WebApi
                 String env = Environment.GetEnvironmentVariable("APSNETCORE_ENVIRONMENT");
                 return new ConfigurationBuilder()
                             .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                            .AddJsonFile("appsettings.json", optional:false)
-                            .AddJsonFile($"appsettings.{env}.json", optional:true)
+                            .AddJsonFile("appsettings.json", optional: false)
+                            .AddJsonFile($"appsettings.{env}.json", optional: true)
                             .AddEnvironmentVariables()
                             .Build();
             }
@@ -27,17 +28,20 @@ namespace netShop.WebApi
 
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args)
+                .Build()
+                .SeedData()
+                .Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseConfiguration(Configuration);
                     webBuilder.UseStartup<Startup>();
                 });
-
-        
+        }
     }
 }

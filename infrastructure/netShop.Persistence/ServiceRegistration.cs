@@ -6,6 +6,7 @@ using netShop.Persistence.Content;
 using netShop.Application.Interfaces.Context;
 using netShop.Application.Interfaces.Repository.Base;
 using netShop.Persistence.Repositories.Base;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace netShop.Persistence
 {
@@ -16,7 +17,8 @@ namespace netShop.Persistence
             // services.AddDbContext<ApplicationDbContext>(options => 
             //             options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
             services.AddDbContext<ApplicationDbContext>(options => {
-                        options.UseInMemoryDatabase(databaseName: "netShopDb");
+                        options.UseInMemoryDatabase(databaseName: "netShopDb")
+                        .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                         // Logging sql 
                         // options.EnableSensitiveDataLogging();
             });

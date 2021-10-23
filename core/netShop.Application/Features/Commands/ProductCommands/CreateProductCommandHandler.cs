@@ -25,8 +25,27 @@ namespace netShop.Application.Features.Commands.ProductCommands
         }
         public async Task<Response<ProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            Product entity = await this.unitOfWork.productRepository.AddAsync(this.mapper.Map<Product>(request));
-            await this.unitOfWork.CommitAsync();
+            Product entity = null;
+            
+            using (var transaction = await this.unitOfWork.BeginTransactionAsync())
+            {
+                try
+                {
+                    entity = await this.unitOfWork.productRepository.AddAsync(this.mapper.Map<Product>(request));
+                    await this.unitOfWork.CommitAsync();
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    await transaction.RollbackAsync();
+                }
+            }
+
             return new Response<ProductDto>(this.mapper.Map<ProductDto>(entity));
         }
     }

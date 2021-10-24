@@ -26,6 +26,11 @@ namespace netShop.Application.Features.Queries.ProductQueries
         }
         public async Task<Response<ProductDto>> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
         {            
+            if (request == null || request.Id == Guid.Empty)
+            {
+                throw new BadRequestException($"{nameof(GetProductDetailQuery)} request is null");
+            }
+
             Product entity = await this.unitOfWork.productRepository.GetByIdAsync(request.Id);
             if (entity == null)
             {

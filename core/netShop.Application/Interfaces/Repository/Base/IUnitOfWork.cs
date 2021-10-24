@@ -8,6 +8,9 @@ namespace netShop.Application.Interfaces.Repository.Base {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {
         IProductRepository productRepository { get; }
+        ISupplierRepository supplierRepository { get; }
+        IBrandRepository brandRepository { get; }
+        IBrandModelRepository brandModelRepository { get; }
 
         Task<IDbContextTransaction> BeginTransactionAsync();
 

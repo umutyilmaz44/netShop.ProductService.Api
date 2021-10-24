@@ -28,6 +28,11 @@ namespace netShop.Application.Features.Commands.ProductCommands
 
         public async Task<Response<Unit>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
+            if (request == null || request.Id == Guid.Empty)
+            {
+                throw new BadRequestException($"{nameof(DeleteProductCommand)} request is null");
+            }
+
             Product entity = await this.unitOfWork.productRepository.GetByIdAsync(request.Id);
             if (entity == null)
             {

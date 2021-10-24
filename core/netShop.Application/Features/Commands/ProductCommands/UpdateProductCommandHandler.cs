@@ -27,6 +27,11 @@ namespace netShop.Application.Features.Commands.ProductCommands
 
         public async Task<Response<Unit>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new BadRequestException($"{nameof(UpdateProductCommand)} request is null");
+            }
+
             Product entity = await this.unitOfWork.productRepository.GetByIdAsync(request.Id);
             if (entity == null)
             {

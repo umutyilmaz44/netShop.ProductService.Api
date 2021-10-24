@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using netShop.Application.Dtos;
+using netShop.Application.Exceptions;
 using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Validators;
 using netShop.Application.Wrappers;
@@ -25,8 +26,13 @@ namespace netShop.Application.Features.Commands.ProductCommands
         }
         public async Task<Response<ProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new BadRequestException($"{nameof(CreateProductCommand)} request is null");
+            }
+
             Product entity = null;
-            
+
             using (var transaction = await this.unitOfWork.BeginTransactionAsync())
             {
                 try

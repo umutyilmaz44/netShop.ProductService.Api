@@ -13,7 +13,9 @@ namespace netShop.Application.Features.Queries.ProductQueries
 {
     public class GetProductDetailQuery : IRequest<Response<ProductDto>>
     {
-        public Guid Id { get; set; }        
+        public Guid Id { get; set; }      
+        public Guid SupplierId { get; set; }
+        public Guid BrandModelId { get; set; }  
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }

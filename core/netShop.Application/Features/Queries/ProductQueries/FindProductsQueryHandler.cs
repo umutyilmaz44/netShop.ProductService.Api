@@ -12,6 +12,7 @@ using netShop.Application.Interfaces.Repository.Base;
 using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 using netShop.Application.Validators;
+using netShop.Application.Exceptions;
 
 namespace netShop.Application.Features.Queries.ProductQueries
 {
@@ -27,33 +28,37 @@ namespace netShop.Application.Features.Queries.ProductQueries
         }
 
         public async Task<PagedResponse<List<ProductDto>>> Handle(FindProductsQuery request, CancellationToken cancellationToken)
-        {            
-            // FindProductsQueryValidator validator = new FindProductsQueryValidator();
-            // var validationResult = validator.Validate(request);
-            // if (!validationResult.IsValid)
-            // {
-            //     return new PagedResponse<List<ProductDto>>("Validation Error", validationResult.Errors.Select( x => $"{x.ErrorCode} : {x.ErrorMessage}").ToArray());
-            // }
+        {
+            if (request == null)
+            {
+                throw new BadRequestException($"{nameof(FindProductsQuery)} request is null");
+            }
 
             Expression<Func<Product, bool>> filter = PredicateBuilder.New<Product>(true);
             var original = filter;
 
+            if (request.BrandModelId != Guid.Empty)
+                filter = filter.And(x => x.brandModelId == request.BrandModelId);
+            
+            if (request.SupplierId != Guid.Empty)
+                filter = filter.And(x => x.supplierId == request.SupplierId);
+
             if (!string.IsNullOrEmpty(request.ProductCode))
                 filter = filter.And(x => x.productCode.Contains(request.ProductCode, StringComparison.InvariantCultureIgnoreCase));
-            
+
             if (!string.IsNullOrEmpty(request.ProductName))
                 filter = filter.And(x => x.productName.Contains(request.ProductName, StringComparison.InvariantCultureIgnoreCase));
-            
+
             if (!string.IsNullOrEmpty(request.Description))
                 filter = filter.And(x => x.description.Contains(request.Description, StringComparison.InvariantCultureIgnoreCase));
-            
+
             if (request.Price.HasValue)
                 filter = filter.And(x => x.price == request.Price.Value);
             if (request.PriceLowerThan.HasValue)
                 filter = filter.And(x => x.price <= request.PriceLowerThan.Value);
             if (request.PriceGreaterThan.HasValue)
                 filter = filter.And(x => x.price >= request.PriceGreaterThan.Value);
-            
+
             if (request.Quantity.HasValue)
                 filter = filter.And(x => x.quantity == request.Quantity.Value);
             if (request.QuantityLowerThan.HasValue)

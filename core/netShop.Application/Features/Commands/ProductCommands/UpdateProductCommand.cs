@@ -14,6 +14,8 @@ namespace netShop.Application.Features.Commands.ProductCommands
 {
     public class UpdateProductCommand : BaseEntity, IRequest<Response<Unit>>
     {
+        public string SupplierId { get; set; }
+        public string BrandModelId { get; set; }
         public String ProductCode { get; set; }
         public String ProductName { get; set; }
         public String Description { get; set; }

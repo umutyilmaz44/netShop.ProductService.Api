@@ -13,6 +13,9 @@ namespace netShop.Persistence.Content
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<Product> Products { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<BrandModel> BrandModels { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

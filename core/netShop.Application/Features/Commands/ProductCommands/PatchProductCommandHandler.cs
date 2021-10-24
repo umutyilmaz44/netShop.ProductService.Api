@@ -29,6 +29,11 @@ namespace netShop.Application.Features.Commands.ProductCommands
 
         public async Task<Response<Unit>> Handle(PatchProductCommand request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new BadRequestException($"{nameof(PatchProductCommand)} request is null");
+            }
+
             Product entity = await this.unitOfWork.productRepository.GetByIdAsync(request.Id);
             if (entity == null)
             {
@@ -38,7 +43,7 @@ namespace netShop.Application.Features.Commands.ProductCommands
             request.patchDto.ApplyTo(dto, request.modelState);
             if (!request.modelState.IsValid)
             {
-                throw new BadRequestException("Product Model path error");
+                throw new BadRequestException($"{nameof(Product)} Model path error");
             }
             
             entity = this.mapper.Map<Product>(dto);

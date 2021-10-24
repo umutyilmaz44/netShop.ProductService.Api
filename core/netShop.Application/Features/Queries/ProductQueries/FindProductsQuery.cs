@@ -17,6 +17,8 @@ namespace netShop.Application.Features.Queries.ProductQueries
 {
     public class FindProductsQuery : IRequest<PagedResponse<List<ProductDto>>>
     {
+        public Guid SupplierId { get; set; }
+        public Guid BrandModelId { get; set; }
         public String ProductCode { get; set; }
         public String ProductName { get; set; }
         public String Description { get; set; }

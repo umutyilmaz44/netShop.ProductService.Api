@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using netShop.Application.Dtos;
 using netShop.Application.Features.Commands.BrandCommands;
 using netShop.Application.Features.Queries.BrandQueries;
-using netShop.Application.Parameters;
 using netShop.Application.Wrappers;
 using netShop.WebApi.Controllers.Base;
 
@@ -17,12 +15,20 @@ namespace netShop.WebApi.Controllers
     //[Authorize]
     public class BrandsController : BaseController
     {
+        /// <summary>
+        /// Find record by parameters
+        /// </summary>
+        /// <param name="request">filter by request fields</param>
+        /// <param name="page">page number for pageable result</param>
+        /// <param name="size">record number per page for pageable result</param>
+        /// <param name="sort">sort result Ex: fieldName1 asc, fieldName2 dec vs...</param>
         [HttpPost]
-        // [AllowAnonymous]
-        public async Task<ActionResult<PagedResponse<List<BrandDto>>>> Find([FromBody] FindBrandsQuery request, [FromQuery] int page = 0, int size = 10)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<PagedResponse<List<BrandDto>>>> Find([FromBody] FindBrandsQuery request, [FromQuery] int page = 0, int size = 10, string sort = "")
         {
             request.Page = page;
             request.PageSize = size;
+            request.Sort = sort;
             var vm = await Mediator.Send(request);
 
             return base.Ok(vm);

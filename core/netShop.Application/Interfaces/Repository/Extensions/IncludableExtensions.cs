@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
-namespace netShop.Application.Features
+namespace netShop.Application.Interfaces.Repository.Extensions
 {
     public static class IncludableExtensions
     {

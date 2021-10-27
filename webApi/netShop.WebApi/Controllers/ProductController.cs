@@ -19,10 +19,11 @@ namespace netShop.WebApi.Controllers
     {
         [HttpPost]
         // [AllowAnonymous]
-        public async Task<ActionResult<PagedResponse<List<ProductDto>>>> Find([FromBody] FindProductsQuery request, [FromQuery] int page = 0, int size = 10)
+        public async Task<ActionResult<PagedResponse<List<ProductDto>>>> Find([FromBody] FindProductsQuery request, [FromQuery] int page = 0, int size = 10, string sort = "")
         {
             request.Page = page;
             request.PageSize = size;
+            request.Sort = sort;
             var vm = await Mediator.Send(request);
 
             return base.Ok(vm);

@@ -13,6 +13,7 @@ using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 using netShop.Application.Validators;
 using netShop.Application.Exceptions;
+using netShop.Application.Interfaces.Repository.Extensions;
 
 namespace netShop.Application.Features.Queries.BrandQueries
 {
@@ -46,7 +47,10 @@ namespace netShop.Application.Features.Queries.BrandQueries
             if (filter == original)
                 filter = x => true;
 
-            PagedResponse<IEnumerable<Brand>> pagedEntities = await this.unitOfWork.brandRepository.FindAsync(filter, pageIndex: request.Page, pageSize: request.PageSize);
+            PagedResponse<IEnumerable<Brand>> pagedEntities = await this.unitOfWork.brandRepository.FindAsync(
+                                                                    filter: filter,
+                                                                    orderBy: OrderableExtensions.GetOrderBy<Brand>(request.Sort), 
+                                                                    pageIndex: request.Page, pageSize: request.PageSize);
             PagedResponse<List<BrandDto>> pagedDtos = new PagedResponse<List<BrandDto>>(
                                                                     pagedEntities.Data.Select(entity => this.mapper.Map<BrandDto>(entity)).ToList(),
                                                                     pagedEntities.CurrentPage, pagedEntities.PageSize, pagedEntities.TotalCount);

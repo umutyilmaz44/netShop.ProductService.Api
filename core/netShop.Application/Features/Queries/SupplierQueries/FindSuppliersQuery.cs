@@ -30,5 +30,7 @@ namespace netShop.Application.Features.Queries.SupplierQueries
         public Int32? Page { get; set; } 
         [JsonIgnore]  
         public Int32? PageSize { get; set; }   
+        [JsonIgnore]  
+        public string Sort { get; set; } 
     }
 }

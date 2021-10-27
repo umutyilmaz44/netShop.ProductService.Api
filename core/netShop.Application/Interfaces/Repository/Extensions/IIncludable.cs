@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace netShop.Application.Features
+namespace netShop.Application.Interfaces.Repository.Extensions
 {
     public interface IIncludable { }
 

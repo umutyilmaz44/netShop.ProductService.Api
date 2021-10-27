@@ -17,12 +17,22 @@ namespace netShop.WebApi.Controllers
     //[Authorize]
     public class BrandModelsController : BaseController
     {
+        /// <summary>
+        ///   Find record by parameters
+        /// </summary>
+        /// <param name="request">filter by request fields</param>
+        /// <param name="page">page number for pageable result</param>
+        /// <param name="size">record number per page for pageable result</param>
+        /// <param name="sort">sort result Ex: fieldName1 asc, fieldName2 dec vs...</param>
         [HttpPost]
-        // [AllowAnonymous]
-        public async Task<ActionResult<PagedResponse<List<BrandModelDto>>>> Find([FromBody] FindBrandModelsQuery request, [FromQuery] int page = 0, int size = 10)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost]
+        public async Task<ActionResult<PagedResponse<List<BrandModelDto>>>> Find([FromBody] FindBrandModelsQuery request, [FromQuery] int page = 0, int size = 10, string sort = "")
         {
             request.Page = page;
             request.PageSize = size;
+            request.Sort = sort;
             var vm = await Mediator.Send(request);
 
             return base.Ok(vm);

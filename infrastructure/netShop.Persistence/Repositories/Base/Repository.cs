@@ -10,6 +10,7 @@ using netShop.Domain.Common;
 using netShop.Persistence.Content;
 using netShop.Application.Wrappers;
 using netShop.Application.Interfaces.Repository.Base;
+using netShop.Application.Interfaces.Repository.Extensions;
 
 namespace netShop.Persistence.Repositories.Base
 {
@@ -31,17 +32,20 @@ namespace netShop.Persistence.Repositories.Base
 
         public virtual async Task<PagedResponse<IEnumerable<T>>> FindAsync(Expression<Func<T, bool>> filter = null,
                                         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-                                        string includeProperties = "", int? pageIndex = null, int? pageSize = null)
+                                        Func<IIncludable<T>, IIncludable> includes = null,
+                                        int? pageIndex = null, int? pageSize = null)
         {
-            if(string.IsNullOrEmpty(includeProperties))
-                includeProperties = "";
-
             IEnumerable<T> dataList;
-            IQueryable<T> query = dbContext.Set<T>();
+            IQueryable<T> query = dbContext.Set<T>().AsQueryable();
 
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+
+            if (includes != null)
+            {
+                query = query.IncludeMultiple(includes);
             }
 
             long totalCount = query.Count();
@@ -54,12 +58,6 @@ namespace netShop.Persistence.Repositories.Base
                 pageIndex = 1;
 
             skipCount = (pageIndex.Value - 1) * pageSize.Value;
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
 
             if (orderBy != null)
             {
@@ -92,7 +90,7 @@ namespace netShop.Persistence.Repositories.Base
             {
                 throw new ArgumentNullException($"{nameof(AddRangeAsync)} entities must not be null");
             }
-            
+
             await dbSet.AddRangeAsync(entities);
         }
         public virtual async Task UpdateAsync(T entity)
@@ -122,7 +120,7 @@ namespace netShop.Persistence.Repositories.Base
 
         public virtual async Task DeleteRangeAsync(IEnumerable<T> entities)
         {
-            await Task.Run( () => this.dbSet.RemoveRange(entities));
+            await Task.Run(() => this.dbSet.RemoveRange(entities));
         }
     }
 }

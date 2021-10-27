@@ -13,6 +13,7 @@ using netShop.Application.Wrappers;
 using netShop.Domain.Entities;
 using netShop.Application.Validators;
 using netShop.Application.Exceptions;
+using netShop.Application.Interfaces.Repository.Extensions;
 
 namespace netShop.Application.Features.Queries.SupplierQueries
 {
@@ -55,7 +56,10 @@ namespace netShop.Application.Features.Queries.SupplierQueries
             if (filter == original)
                 filter = x => true;
 
-            PagedResponse<IEnumerable<Supplier>> pagedEntities = await this.unitOfWork.supplierRepository.FindAsync(filter, pageIndex: request.Page, pageSize: request.PageSize);
+            PagedResponse<IEnumerable<Supplier>> pagedEntities = await this.unitOfWork.supplierRepository.FindAsync(
+                                                                        filter:filter, 
+                                                                        orderBy: OrderableExtensions.GetOrderBy<Supplier>(request.Sort),
+                                                                        pageIndex: request.Page, pageSize: request.PageSize);
             PagedResponse<List<SupplierDto>> pagedDtos = new PagedResponse<List<SupplierDto>>(
                                                                     pagedEntities.Data.Select(entity => this.mapper.Map<SupplierDto>(entity)).ToList(),
                                                                     pagedEntities.CurrentPage, pagedEntities.PageSize, pagedEntities.TotalCount);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using netShop.Domain.Common;
 using netShop.Application.Wrappers;
+using netShop.Application.Interfaces.Repository.Extensions;
 
 namespace netShop.Application.Interfaces.Repository.Base {
     public interface IRepository<T> where T : BaseEntity {
@@ -13,7 +14,8 @@ namespace netShop.Application.Interfaces.Repository.Base {
 
         Task<PagedResponse<IEnumerable<T>>> FindAsync (Expression<Func<T, bool>> filter=null, 
                                         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,  
-                                        string includeProperties=null, int? pageIndex=null, int? pageSize=null);
+                                        Func<IIncludable<T>, IIncludable> includes = null, 
+                                        int? pageIndex=null, int? pageSize=null);
         Task<T> GetByIdAsync (Guid id);
         Task<T> AddAsync (T entity);
         Task AddRangeAsync (IEnumerable<T> entities);

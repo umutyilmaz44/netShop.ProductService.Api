@@ -23,6 +23,8 @@ namespace netShop.Application.Features.Queries.BrandQueries
         [JsonIgnore]
         public Int32? Page { get; set; } 
         [JsonIgnore]  
-        public Int32? PageSize { get; set; }   
+        public Int32? PageSize { get; set; }  
+        [JsonIgnore]  
+        public string Sort { get; set; }  
     }
 }

@@ -8,7 +8,5 @@
  * Global Exception Handling Mechanism implementation
  * Repository Pattern with UnitOfWork
  * Central Log Mechanism GrayLog with Serilog
- * Postgresql database connection on docker containerization 
  * Swagger Open API implementation
- * Dockerfile and docker-compose implementation
  

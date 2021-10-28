@@ -4,7 +4,7 @@
  which includes; 
  * ASP.NET Core Web API application
  * REST API principles, CRUD operations
- * CQRS, MediatR and DDD patern implementation
+ * CQRS, MediatR and DDD patTern implementation
  * Global Exception Handling Mechanism implementation
  * Repository Pattern with UnitOfWork
  * Central Log Mechanism GrayLog with Serilog

@@ -1,4 +1,4 @@
-# netShop.Product Service
+# netShop.ProductService
 ## Microservices Architecture (RestAPI) on .NET 5.0 with applying CQRS, Clean Architecture and Event-Driven Communication
 
  which includes; 

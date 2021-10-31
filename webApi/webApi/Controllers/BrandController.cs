@@ -13,6 +13,7 @@ using NetShop.ProductService.WebApi.Controllers.Base;
 namespace NetShop.ProductService.WebApi.Controllers
 {
     //[Authorize]
+    [Produces("application/json")]
     public class BrandsController : BaseController
     {
         /// <summary>

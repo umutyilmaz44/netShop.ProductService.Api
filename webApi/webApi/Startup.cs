@@ -1,18 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using NetShop.ProductService.Application;
@@ -35,12 +29,13 @@ namespace NetShop.ProductService.WebApi
         {
             services.AddApplicationRegistration();
             services.AddPersistenceRegistration(Configuration);
+            
             services.AddControllers()
                     .AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "netShop.WebApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "netShop.ProductService.WebApi", Version = "v1" });
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -55,10 +50,11 @@ namespace NetShop.ProductService.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "netShop.WebApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "netShop.ProductService.WebApi v1"));
             }
 
             app.UseCustomExceptionHandler();
+                        
             app.UseHealthChecks("/api/healthcheck", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
             {
                 ResponseWriter = async (context, report) =>
@@ -68,6 +64,10 @@ namespace NetShop.ProductService.WebApi
             });
 
             app.UseHttpsRedirection();
+
+            app.UseSecurityHeaders();
+            app.UseAntiXssMiddleware();
+            app.UseAntiXss2Middleware();
 
             app.UseRouting();
 

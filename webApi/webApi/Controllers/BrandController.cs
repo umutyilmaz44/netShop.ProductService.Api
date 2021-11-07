@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using NetShop.ProductService.WebApi.Controllers.Base;
 
 namespace NetShop.ProductService.WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
     public class BrandsController : BaseController
     {

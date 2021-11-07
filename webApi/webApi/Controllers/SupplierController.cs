@@ -14,7 +14,7 @@ using NetShop.ProductService.WebApi.Controllers.Base;
 
 namespace NetShop.ProductService.WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Produces("application/json")]
     public class SuppliersController : BaseController
     {

@@ -7,11 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using NetShop.ProductService.Domain.Entities;
 using NetShop.ProductService.Domain.Common;
 using NetShop.ProductService.Application.Interfaces.Context;
+using application.Interfaces.Common;
 
 namespace NetShop.ProductService.Infrastructure.Persistence.Content
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
+        private readonly ICurrentUserService _currentUserService;
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Brand> Brands { get; set; }
@@ -19,7 +22,11 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+          
+        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentUserService currentUserService) : base(options)
+        {
+            _currentUserService = currentUserService;
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,11 +40,11 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        //entry.Entity.CreatedBy = _currentUserService.UserId;
+                        entry.Entity.CreatedBy = _currentUserService?.UserId;
                         entry.Entity.CreatedDate = DateTime.Now;
                         break;
                     case EntityState.Modified:
-                        //entry.Entity.LastModifiedBy = _currentUserService.UserId;
+                        entry.Entity.LastModifiedBy = _currentUserService?.UserId;
                         entry.Entity.LastModifiedDate = DateTime.Now;
                         break;
                 }

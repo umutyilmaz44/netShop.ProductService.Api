@@ -18,6 +18,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                 var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
                 context.Database.EnsureCreated();
+                
                 if (!context.Suppliers.Any())
                 {
                     #region Supplier

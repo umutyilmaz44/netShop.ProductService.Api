@@ -48,6 +48,77 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
                     orderByMethod.Invoke(null, new object[] { query, selector.Item1 });
         }
 
+        // public static Func<IQueryable<T>, IOrderedQueryable<T>> GetOrderByOld<T>(string sort) where T : BaseEntity
+        // {
+        //     Expression resultExp = null;
+        //     Type typeQueryable = typeof(IQueryable<T>);
+        //     ParameterExpression argQueryable = Expression.Parameter(typeQueryable, "p");
+        //     LambdaExpression outerExpression = Expression.Lambda(argQueryable, argQueryable);
+
+        //     MatchCollection mc = null;
+        //     if (!string.IsNullOrEmpty(sort))
+        //     {
+        //         var regex = new Regex(@"^(\s*(?<fieldName>\w+)(?<sortType>\s+\w+)?,?)*$");
+        //         mc = regex.Matches(sort.Trim());
+        //     }
+        //     if (mc != null)
+        //     {
+        //         PropertyInfo pi;
+        //         Type entityType = typeof(T);
+        //         String methodName = string.Empty;
+
+        //         ParameterExpression arg = Expression.Parameter(entityType, "x");
+        //         Expression expr = arg;
+
+        //         foreach (Match match in mc)
+        //         {
+        //             pi = entityType.GetProperty(match.Groups["fieldName"].Value.Trim(), BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        //             if (pi != null)
+        //             {
+        //                 Expression propertyExpr = Expression.Property(expr, pi);
+        //                 Type propertyType = pi.PropertyType;
+        //                 LambdaExpression lambdaExp = Expression.Lambda(propertyExpr, arg);
+        //                 if (resultExp != null)
+        //                 {
+        //                     methodName = (string.IsNullOrEmpty(match.Groups["sortType"].Value) || match.Groups["sortType"].Value.Trim().ToLower() == "asc")
+        //                                     ? "ThenBy"
+        //                                     : "ThenByDescending";
+
+        //                     /// No generic method 'ThenBy' on type 'System.Linq.Queryable' is compatible with the supplied type arguments and arguments.
+        //                     /// No type arguments should be provided if the method is non - generic.
+        //                     Expression exp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propertyType }, outerExpression.Body, Expression.Quote(lambdaExp));
+
+        //                     MethodInfo minfo = typeof(Queryable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == methodName);
+
+        //                     /// Method System.Linq.IOrderedQueryable`1
+        //                     /// [TSource] OrderBy[TSource,TKey](System.Linq.IQueryable`1
+        //                     /// [TSource],System.Linq.Expressions.Expression`1
+        //                     /// [System.Func`2[TSource,TKey]]) is a generic method definition
+        //                     /// Parameter name: method
+        //                     resultExp = Expression.Call(minfo, exp, resultExp);
+        //                 }
+        //                 else
+        //                 {
+        //                     methodName = (string.IsNullOrEmpty(match.Groups["sortType"].Value) || match.Groups["sortType"].Value.Trim().ToLower() == "asc")
+        //                                     ? "OrderBy"
+        //                                     : "OrderByDescending";
+        //                     resultExp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propertyType }, outerExpression.Body, Expression.Quote(lambdaExp));
+        //                 }
+        //             }
+        //             else {
+        //                 throw new BadRequestException($"{match.Groups["fieldName"].Value.Trim()} field not found");
+        //             }
+        //         }
+        //     }
+        //     if (resultExp != null)
+        //     {
+        //         LambdaExpression orderedLambda = Expression.Lambda(resultExp, argQueryable);
+        //         return (Func<IQueryable<T>, IOrderedQueryable<T>>)orderedLambda.Compile();
+        //     }
+        //     else
+        //         return null;
+        // }
+
         public static Func<IQueryable<T>, IOrderedQueryable<T>> GetOrderBy<T>(string sort) where T : BaseEntity
         {
             Expression resultExp = null;
@@ -58,7 +129,7 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
             MatchCollection mc = null;
             if (!string.IsNullOrEmpty(sort))
             {
-                var regex = new Regex(@"^(\s*(?<fieldName>\w+)(?<sortType>\s+\w+)?,?)*$");
+                var regex = new Regex(@"^(\s*(?<fieldName>([^\s].?\w+)+)(?<sortType>\s+\w+)?,?)*$");
                 mc = regex.Matches(sort.Trim());
             }
             if (mc != null)
@@ -70,13 +141,29 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
                 ParameterExpression arg = Expression.Parameter(entityType, "x");
                 Expression expr = arg;
 
+                Type propType = null;
+                Expression propExpr = null;
                 foreach (Match match in mc)
                 {
-                    pi = entityType.GetProperty(match.Groups["fieldName"].Value.Trim(), BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                    if (pi != null)
+                    
+                    Expression propertyExpr = arg;
+                    string[] parts = match.Groups["fieldName"].Value.Trim().Split(".");
+                    foreach (var part in parts)
                     {
-                        Expression propertyExpr = Expression.Property(expr, pi);
-                        Type propertyType = pi.PropertyType;
+                        (propExpr, propType) = getExpression(propertyExpr, part);
+                        if(propExpr != null)
+                        {
+                            propertyExpr = propExpr;
+                        } 
+                        else 
+                        {
+                            propertyExpr = null;
+                            break;
+                        }
+                    }
+
+                    if(propertyExpr != null)
+                    {
                         LambdaExpression lambdaExp = Expression.Lambda(propertyExpr, arg);
                         if (resultExp != null)
                         {
@@ -86,7 +173,7 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
 
                             /// No generic method 'ThenBy' on type 'System.Linq.Queryable' is compatible with the supplied type arguments and arguments.
                             /// No type arguments should be provided if the method is non - generic.
-                            Expression exp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propertyType }, outerExpression.Body, Expression.Quote(lambdaExp));
+                            Expression exp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propType }, outerExpression.Body, Expression.Quote(lambdaExp));
 
                             MethodInfo minfo = typeof(Queryable).GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == methodName);
 
@@ -102,7 +189,7 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
                             methodName = (string.IsNullOrEmpty(match.Groups["sortType"].Value) || match.Groups["sortType"].Value.Trim().ToLower() == "asc")
                                             ? "OrderBy"
                                             : "OrderByDescending";
-                            resultExp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propertyType }, outerExpression.Body, Expression.Quote(lambdaExp));
+                            resultExp = Expression.Call(typeof(Queryable), methodName, new Type[] { entityType, propType }, outerExpression.Body, Expression.Quote(lambdaExp));
                         }
                     }
                     else {
@@ -117,6 +204,24 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
             }
             else
                 return null;
+        }
+
+        private static (Expression, Type) getExpression(Expression expr, string part)
+        {
+            // Expression propertyExpr
+            Type entityType = expr.Type;
+            PropertyInfo pi = entityType.GetProperty(part.Trim(), BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (pi != null)
+            {
+                Expression propertyExpr = Expression.Property(expr, pi);
+                Type propertyType = pi.PropertyType;
+
+                return (propertyExpr, propertyType);
+            } 
+            else 
+            {
+                return (null, null);
+            }
         }
     }
 }

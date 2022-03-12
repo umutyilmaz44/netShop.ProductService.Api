@@ -19,7 +19,7 @@ namespace NetShop.ProductService.Application.Wrappers
             this.TotalCount = totalCount;
             this.TotalPages = (totalCount == 0 || pageSize == 0) 
                             ? 0 
-                            : ((double)totalCount / (double)pageSize) * pageSize ==  totalCount 
+                            : ((double)totalCount % (double)pageSize) > 0 
                                 ? (int)(totalCount / pageSize) + 1
                                 : (int)(totalCount / pageSize);
             this.Succeeded = true;

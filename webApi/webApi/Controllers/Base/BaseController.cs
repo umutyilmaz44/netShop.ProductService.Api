@@ -9,7 +9,7 @@ using NetShop.ProductService.Domain.Common;
 namespace NetShop.ProductService.WebApi.Controllers.Base
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public abstract class BaseController : ControllerBase
     {
         private IMediator _mediator;

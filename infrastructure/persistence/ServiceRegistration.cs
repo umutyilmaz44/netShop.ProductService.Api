@@ -20,7 +20,8 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                         options.UseInMemoryDatabase(databaseName: "netShopDb")
                         .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                         // Logging sql 
-                        // options.EnableSensitiveDataLogging();
+                        options.EnableDetailedErrors();
+                        options.EnableSensitiveDataLogging();
             });
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()) ;  

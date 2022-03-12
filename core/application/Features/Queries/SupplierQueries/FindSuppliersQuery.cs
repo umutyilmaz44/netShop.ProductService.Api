@@ -25,6 +25,7 @@ namespace NetShop.ProductService.Application.Features.Queries.SupplierQueries
         public string Phone { get; set; }
         public string Fax { get; set; }
  
+        public string GenericQuery { get; set; }
 
         [JsonIgnore]
         public Int32? Page { get; set; } 

@@ -37,14 +37,16 @@ namespace NetShop.ProductService.WebApi
             services.AddApplicationRegistration();
             services.AddPersistenceRegistration(Configuration);
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     // IdentityServer uygulamasının adresi
                     options.Authority = (string)Convert.ChangeType(Configuration["JwtAuthentication:Authority"], typeof(string));
                     // options.RequireHttpsMetadata = true;
-                    //options.Audience = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidAudience"], typeof(string)),
-                    
+                    options.Audience = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidAudience"], typeof(string));
+                    // IdentityServer emits a typ header by default, recommended extra check
+                    options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidAudience = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidAudience"], typeof(string)),
@@ -55,8 +57,12 @@ namespace NetShop.ProductService.WebApi
                         ValidateLifetime = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateLifetime"], typeof(bool)),
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes((string)Convert.ChangeType(Configuration["JwtAuthentication:IssuerSigningKey"], typeof(string)))),
                         ValidateIssuerSigningKey = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateIssuerSigningKey"], typeof(bool)),
-                        ClockSkew = TimeSpan.Zero
+                        ClockSkew = TimeSpan.Zero,
+                        RequireSignedTokens = true,
+                        RequireExpirationTime = true,
+                        RoleClaimType = "role"
                     };
+                    options.SaveToken= true;
 
                     //JWT eventlarının yakalandığı yerdir.
                     options.Events = new JwtBearerEvents
@@ -81,8 +87,10 @@ namespace NetShop.ProductService.WebApi
                 options.AddPolicy("ApiScope", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "ProductServiceApi");
+                    policy.RequireClaim("scope", "ProductService.Read", "ProductService.Write");
                 });
+                options.AddPolicy("ReadApi", policy => policy.RequireClaim("scope", "ProductService.Read"));
+                options.AddPolicy("WriteApi", policy => policy.RequireClaim("scope", "ProductService.Write"));
             });
 
             services.AddCors(options =>

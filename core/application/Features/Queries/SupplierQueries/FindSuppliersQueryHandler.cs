@@ -52,6 +52,13 @@ namespace NetShop.ProductService.Application.Features.Queries.SupplierQueries
             
             if (!string.IsNullOrEmpty(request.Phone))
                 filter = filter.And(x => x.phone.Contains(request.Phone, StringComparison.InvariantCultureIgnoreCase));
+
+            if (!string.IsNullOrEmpty(request.GenericQuery))
+                filter = filter.And(x => x.supplierName.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.description.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.email.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.fax.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.phone.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase));
             
             if (filter == original)
                 filter = x => true;

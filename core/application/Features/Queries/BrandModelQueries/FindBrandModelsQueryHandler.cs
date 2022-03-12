@@ -43,6 +43,10 @@ namespace NetShop.ProductService.Application.Features.Queries.BrandModelQueries
 
             if (!string.IsNullOrEmpty(request.Description))
                 filter = filter.And(x => x.description.Contains(request.Description, StringComparison.InvariantCultureIgnoreCase));
+            
+            if (!string.IsNullOrEmpty(request.GenericQuery))
+                filter = filter.And(x => x.modelName.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) || 
+                                         x.description.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase));
 
             if (request.BrandId != Guid.Empty)
                 filter = filter.And(x => x.brandId == request.BrandId);
@@ -50,10 +54,14 @@ namespace NetShop.ProductService.Application.Features.Queries.BrandModelQueries
             if (filter == original)
                 filter = x => true;
 
+            if(request.Sort.Contains("BrandName", StringComparison.InvariantCultureIgnoreCase)){
+               request.Sort = request.Sort.Replace("BrandName", "brand.BrandName"); 
+            }
+
             PagedResponse<IEnumerable<BrandModel>> pagedEntities = await this.unitOfWork.brandModelRepository.FindAsync(
                                                                         filter: filter,
                                                                         includes: (x => x.Include(u => u.brand)),
-                                                                         orderBy: OrderableExtensions.GetOrderBy<BrandModel>(request.Sort),
+                                                                        orderBy: OrderableExtensions.GetOrderBy<BrandModel>(request.Sort),
                                                                         pageIndex: request.Page, pageSize: request.PageSize);
             PagedResponse<List<BrandModelDto>> pagedDtos = new PagedResponse<List<BrandModelDto>>(
                                                                     pagedEntities.Data.Select(entity => this.mapper.Map<BrandModelDto>(entity)).ToList(),

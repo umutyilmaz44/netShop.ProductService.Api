@@ -18,13 +18,13 @@ namespace NetShop.ProductService.WebApi.Controllers
     public class BrandsController : BaseController
     {
         /// <summary>
-        /// Find record by parameters
+        /// Find records by parameters
         /// </summary>
         /// <param name="request">filter by request fields</param>
         /// <param name="page">page number for pageable result</param>
         /// <param name="size">record number per page for pageable result</param>
         /// <param name="sort">sort result Ex: fieldName1 asc, fieldName2 dec vs...</param>
-        [HttpPost]
+        [HttpPost, Route("find")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
         public async Task<ActionResult<PagedResponse<List<BrandDto>>>> Find([FromBody] FindBrandsQuery request, [FromQuery] int page = 0, int size = 10, string sort = "")
@@ -36,17 +36,25 @@ namespace NetShop.ProductService.WebApi.Controllers
 
             return Ok(vm);
         }
-
-        [HttpGet("{id}")]
+        
+        /// <summary>
+        /// Get record by id
+        /// </summary>
+        /// <param name="id">record unique id</param>
+        [HttpGet("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response))]
-        public async Task<ActionResult<BrandDto>> Get(Guid id)
+        public async Task<ActionResult<Response<BrandDto>>> Get(Guid id)
         {
             var vm = await Mediator.Send(new GetBrandDetailQuery { Id = id });
 
             return Ok(vm);
         }
 
+        /// <summary>
+        /// Create new record by request parameter
+        /// </summary>
+        /// <param name="request">record data</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
@@ -57,16 +65,27 @@ namespace NetShop.ProductService.WebApi.Controllers
             return Created("",response);
         }
 
-        [HttpPut]
+        /// <summary>
+        /// Update record by request parameters
+        /// </summary>
+        /// <param name="id">record unique id</param>
+        /// <param name="request">all record data</param>
+        [HttpPut("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
-        public async Task<ActionResult<Response>> Update([FromBody] UpdateBrandCommand request)
+        public async Task<ActionResult<Response>> Update(Guid id, [FromBody] UpdateBrandCommand request)
         {
+            request.Id = id;
             Response response = await Mediator.Send(request);
 
             return Ok(response);
         }
 
+        /// <summary>
+        /// Patch record by request parameters
+        /// </summary>
+        /// <param name="id">record unique id</param>
+        /// <param name="patchDto">partial record data</param>
         [HttpPatch("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
@@ -78,6 +97,10 @@ namespace NetShop.ProductService.WebApi.Controllers
            return Ok(response);
         }
 
+        /// <summary>
+        /// Delete record by id
+        /// </summary>
+        /// <param name="id">record unique id</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]

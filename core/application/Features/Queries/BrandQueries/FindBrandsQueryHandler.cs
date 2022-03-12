@@ -44,6 +44,10 @@ namespace NetShop.ProductService.Application.Features.Queries.BrandQueries
             if (!string.IsNullOrEmpty(request.Description))
                 filter = filter.And(x => x.description.Contains(request.Description, StringComparison.InvariantCultureIgnoreCase));
             
+            if (!string.IsNullOrEmpty(request.GenericQuery))
+                filter = filter.And(x => x.brandName.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) || 
+                                         x.description.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase));
+
             if (filter == original)
                 filter = x => true;
 

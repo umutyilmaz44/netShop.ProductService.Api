@@ -19,13 +19,13 @@ namespace NetShop.ProductService.WebApi.Controllers
     public class BrandModelsController : BaseController
     {
         /// <summary>
-        ///   Find record by parameters
+        ///   Find records by parameters
         /// </summary>
         /// <param name="request">filter by request fields</param>
         /// <param name="page">page number for pageable result</param>
         /// <param name="size">record number per page for pageable result</param>
         /// <param name="sort">sort result Ex: fieldName1 asc, fieldName2 dec vs...</param>
-        [HttpPost]
+        [HttpPost, Route("find")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<List<BrandModelDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
         [HttpPost]
@@ -39,6 +39,10 @@ namespace NetShop.ProductService.WebApi.Controllers
             return Ok(vm);
         }
 
+        /// <summary>
+        /// Get record by id
+        /// </summary>
+        /// <param name="id">record unique id</param>
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response))]
@@ -49,6 +53,10 @@ namespace NetShop.ProductService.WebApi.Controllers
             return Ok(vm);
         }
 
+        /// <summary>
+        /// Create new record by request parameter
+        /// </summary>
+        /// <param name="request">record data</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
@@ -59,16 +67,27 @@ namespace NetShop.ProductService.WebApi.Controllers
             return Created("", response);
         }
 
-        [HttpPut]
+        /// <summary>
+        /// Update record by request parameters
+        /// </summary>
+        /// <param name="id">record unique id</param>
+        /// <param name="request">all record data</param>
+        [HttpPut("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
-        public async Task<ActionResult<Response>> Update([FromBody] UpdateBrandModelCommand request)
+        public async Task<ActionResult<Response>> Update(Guid id, [FromBody] UpdateBrandModelCommand request)
         {
+            request.Id = id;
             Response response = await Mediator.Send(request);
 
             return Ok(response);
         }
 
+        /// <summary>
+        /// Patch record by request parameters
+        /// </summary>
+        /// <param name="id">record unique id</param>
+        /// <param name="patchDto">partial record data</param>
         [HttpPatch("{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]
@@ -80,6 +99,10 @@ namespace NetShop.ProductService.WebApi.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Delete record by id
+        /// </summary>
+        /// <param name="id">record unique id</param>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Response))]

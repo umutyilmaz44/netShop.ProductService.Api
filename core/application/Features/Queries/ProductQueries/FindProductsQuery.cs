@@ -31,6 +31,8 @@ namespace NetShop.ProductService.Application.Features.Queries.ProductQueries
         public Int32? QuantityLowerThan { get; set; }
         public Int32? QuantityGreaterThan { get; set; }   
 
+        public string GenericQuery { get; set; }
+        
         [JsonIgnore]
         public Int32? Page { get; set; } 
         [JsonIgnore]  

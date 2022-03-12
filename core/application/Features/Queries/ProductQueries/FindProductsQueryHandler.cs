@@ -53,6 +53,11 @@ namespace NetShop.ProductService.Application.Features.Queries.ProductQueries
             if (!string.IsNullOrEmpty(request.Description))
                 filter = filter.And(x => x.description.Contains(request.Description, StringComparison.InvariantCultureIgnoreCase));
 
+            if (!string.IsNullOrEmpty(request.GenericQuery))
+                filter = filter.And(x => x.productCode.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.productName.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase) ||
+                                         x.description.Contains(request.GenericQuery, StringComparison.InvariantCultureIgnoreCase));
+
             if (request.Price.HasValue)
                 filter = filter.And(x => x.price == request.Price.Value);
             if (request.PriceLowerThan.HasValue)

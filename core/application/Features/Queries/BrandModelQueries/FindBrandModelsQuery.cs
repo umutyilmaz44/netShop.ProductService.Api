@@ -21,6 +21,8 @@ namespace NetShop.ProductService.Application.Features.Queries.BrandModelQueries
         public string ModelName { get; set; }
         public string Description { get; set; }
 
+        public string GenericQuery { get; set; }
+
         [JsonIgnore]
         public Int32? Page { get; set; } 
         [JsonIgnore]  

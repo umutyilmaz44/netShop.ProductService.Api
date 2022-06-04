@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NetShop.ProductService.Application.Dtos;
 using NetShop.ProductService.Application.Features.Commands.ProductCommands;
 using NetShop.ProductService.Application.Features.Queries.ProductQueries;
@@ -18,6 +19,10 @@ namespace NetShop.ProductService.WebApi.Controllers
     [Produces("application/json")]
     public class ProductsController : BaseController
     {
+        public ProductsController(ILogger<ProductsController> logger) : base(logger)
+        {
+        }
+
         /// <summary>
         /// Find records by parameters
         /// </summary>

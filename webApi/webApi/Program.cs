@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NetShop.ProductService.Infrastructure.Persistence;
@@ -13,55 +14,68 @@ namespace NetShop.ProductService.WebApi
 {
     public class Program
     {
-        private static String env = Environment.GetEnvironmentVariable("APSNETCORE_ENVIRONMENT");
-        private static IConfiguration configuration
-        {
-            get
-            {                
-                return new ConfigurationBuilder()
-                            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                            .AddJsonFile($"Configurations/appsettings.json", optional: false)
-                            .AddJsonFile($"Configurations/appsettings.{env}.json", optional: true)
-                            .AddEnvironmentVariables()
-                            .Build();
-            }
+        private static IConfiguration configuration(IWebHostEnvironment hostEnv)
+        {                
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            env = String.IsNullOrEmpty(env) ? hostEnv.EnvironmentName : env;
+            return new ConfigurationBuilder()
+                        .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                        .AddJsonFile($"Configurations/appsettings.json", optional: false)
+                        .AddJsonFile($"Configurations/appsettings.{env}.json", optional: true)
+                        .AddEnvironmentVariables()
+                        .Build();
         }
 
-        private static IConfiguration serilogConfiguration
-        {
-            get
-            {                
-                return new ConfigurationBuilder()
-                            .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                            .AddJsonFile($"Configurations/serilog.json", optional: false)
-                            .AddJsonFile($"Configurations/serilog.{env}.json", optional: true)
-                            .AddEnvironmentVariables()
-                            .Build();
-            }
+        private static IConfiguration serilogConfiguration(IWebHostEnvironment hostEnv)
+        {   
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            env = String.IsNullOrEmpty(env) ? hostEnv.EnvironmentName : env;
+
+            return new ConfigurationBuilder()
+                        .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                        .AddJsonFile($"Configurations/serilog.json", optional: false)
+                        .AddJsonFile($"Configurations/serilog.{env}.json", optional: true)
+                        .AddEnvironmentVariables()
+                        .Build();
         }
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args)
                 .Build();
 
+            IWebHostEnvironment hostEnv = host.Services.GetRequiredService<IWebHostEnvironment>();
+           
+            Console.WriteLine($"Environment['ASPNETCORE_ENVIRONMENT'] = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+            Console.WriteLine($"IWebHostEnvironment['EnvironmentName'] = {hostEnv.EnvironmentName}");
+           
             Log.Logger = new LoggerConfiguration()
-                            .ReadFrom.Configuration(serilogConfiguration)
+                            .ReadFrom.Configuration(serilogConfiguration(hostEnv))
                             .CreateLogger();
 
-            host.SeedData()
-                .Run();
+            host = await host.SeedData(configuration(hostEnv));
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
+            var builder = Host.CreateDefaultBuilder(args);
+            
             return Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostContext, config) => {
+                    var env = hostContext.HostingEnvironment;
+                    config.SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                            .AddJsonFile($"Configurations/appsettings.json", optional: false)
+                            .AddJsonFile($"Configurations/appsettings.{env.EnvironmentName}.json", optional: true)
+                            .AddEnvironmentVariables();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseConfiguration(configuration)
-                              .UseStartup<Startup>()
-                              .ConfigureLogging(c => c.ClearProviders())
-                              .UseSerilog();
+                    webBuilder
+                            //.UseConfiguration(configuration)
+                            .UseStartup<Startup>()
+                            .ConfigureLogging(c => c.ClearProviders())
+                            .UseSerilog();
                 });
         }
     }

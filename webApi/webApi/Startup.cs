@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +13,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using NetShop.ProductService.Application;
 using NetShop.ProductService.Infrastructure.Persistence;
 using NetShop.ProductService.WebApi.Middlewares;
+using Newtonsoft.Json;
 using webApi.Middlewares;
+using webApi.Settings;
 
 namespace NetShop.ProductService.WebApi
 {
@@ -37,32 +41,37 @@ namespace NetShop.ProductService.WebApi
             services.AddApplicationRegistration();
             services.AddPersistenceRegistration(Configuration);
 
+            SsoSettings ssoSettings = Configuration.GetSection(nameof(SsoSettings)).Get<SsoSettings>();
+            
+            Console.WriteLine(nameof(SsoSettings) + ":");
+            Console.WriteLine(JsonConvert.SerializeObject(ssoSettings, Formatting.Indented));
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     // IdentityServer uygulamasının adresi
-                    options.Authority = (string)Convert.ChangeType(Configuration["JwtAuthentication:Authority"], typeof(string));
+                    options.Authority = ssoSettings.Authority;
                     // options.RequireHttpsMetadata = true;
-                    options.Audience = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidAudience"], typeof(string));
+                    options.Audience = ssoSettings.ValidAudience;
                     // IdentityServer emits a typ header by default, recommended extra check
                     options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidAudience = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidAudience"], typeof(string)),
-                        ValidateAudience = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateAudience"], typeof(bool)),
+                        ValidAudience = ssoSettings.ValidAudience,
+                        ValidateAudience = ssoSettings.ValidateAudience,
 
-                        ValidIssuer = (string)Convert.ChangeType(Configuration["JwtAuthentication:ValidIssuer"], typeof(string)),
-                        ValidateIssuer = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateIssuer"], typeof(bool)),
-                        ValidateLifetime = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateLifetime"], typeof(bool)),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes((string)Convert.ChangeType(Configuration["JwtAuthentication:IssuerSigningKey"], typeof(string)))),
-                        ValidateIssuerSigningKey = (bool)Convert.ChangeType(Configuration["JwtAuthentication:ValidateIssuerSigningKey"], typeof(bool)),
+                        ValidIssuer = ssoSettings.ValidIssuer,
+                        ValidateIssuer = ssoSettings.ValidateIssuer,
+                        ValidateLifetime = ssoSettings.ValidateLifetime,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(ssoSettings.IssuerSigningKey)),
+                        ValidateIssuerSigningKey = ssoSettings.ValidateIssuerSigningKey,
                         ClockSkew = TimeSpan.Zero,
                         RequireSignedTokens = true,
                         RequireExpirationTime = true,
                         RoleClaimType = "role"
                     };
-                    options.SaveToken= true;
+                    options.SaveToken = true;
 
                     //JWT eventlarının yakalandığı yerdir.
                     options.Events = new JwtBearerEvents
@@ -76,7 +85,7 @@ namespace NetShop.ProductService.WebApi
                         //Eğer token bilgisi doğruysa buraya düşecek.
                         OnTokenValidated = _ =>
                         {
-                            Console.WriteLine($"Login Success:{ _.Principal.Identity}");
+                            Console.WriteLine($"Login Success:{_.Principal.Identity}");
                             return Task.CompletedTask;
                         },
                     };
@@ -86,11 +95,12 @@ namespace NetShop.ProductService.WebApi
             {
                 options.AddPolicy("ApiScope", policy =>
                 {
+                    // JWT token içerisinde sub claim (user info) ı olmasını zorunlu kılıyor
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", "ProductService.Read", "ProductService.Write");
+                    policy.RequireClaim("scope", $"{ssoSettings.ValidAudience}.Read", $"{ssoSettings.ValidAudience}.Write");
                 });
-                options.AddPolicy("ReadApi", policy => policy.RequireClaim("scope", "ProductService.Read"));
-                options.AddPolicy("WriteApi", policy => policy.RequireClaim("scope", "ProductService.Write"));
+                options.AddPolicy("ReadApi", policy => policy.RequireClaim("scope", $"{ssoSettings.ValidAudience}.Read"));
+                options.AddPolicy("WriteApi", policy => policy.RequireClaim("scope", $"{ssoSettings.ValidAudience}.Write"));
             });
 
             services.AddCors(options =>
@@ -147,8 +157,16 @@ namespace NetShop.ProductService.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            logger.LogDebug("UseHttps: " + Configuration["UseHttps"].ToUpper());
+            if (!String.IsNullOrEmpty(Configuration["UseHttps"]) && Configuration["UseHttps"].ToUpper() == "YES")
+            {
+                app.UseHsts();
+                app.UseHttpsRedirection();
+                logger.LogDebug("Https Redirection is enabled.");
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -166,12 +184,9 @@ namespace NetShop.ProductService.WebApi
                 }
             });
 
-            app.UseHttpsRedirection();
-
             app.UseSecurityHeaders();
             app.UseAntiXssMiddleware();
             app.UseAntiXss2Middleware();
-
 
             app.UseRouting();
 
@@ -182,7 +197,7 @@ namespace NetShop.ProductService.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers()
-                         .RequireAuthorization("ApiScope");;
+                         .RequireAuthorization("ApiScope"); ;
             });
         }
     }

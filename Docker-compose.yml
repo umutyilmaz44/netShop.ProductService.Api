@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  c_product_service_api:
+    image: product_service_api
+    environment:
+      - DbSettings__Host=177.10.10.1 
+      - SsoSettings__Authority=https://8.8.8.8:5000
+      - UseHttps=yes
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_HTTPS_PORT=5011
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=netProduct123.
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/netShop.ProductService.WebApi.pfx
+    ports:
+      - "5010:80"
+      - "5011:443"
+    volumes:
+      - ${HOME}/.aspnet/https:/https/

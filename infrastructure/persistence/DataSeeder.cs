@@ -5,20 +5,33 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetShop.ProductService.Infrastructure.Persistence.Content;
 using NetShop.ProductService.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using persistence.Settings;
 
 namespace NetShop.ProductService.Infrastructure.Persistence
 {
     public static class DataSeeder
     {
-        public static IHost SeedData(this IHost host)
+        public static async Task<IHost> SeedData(this IHost host, IConfiguration configuration)
         {
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
 
-                context.Database.EnsureCreated();
-                
+                DbSettings dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>();
+
+                if (!string.IsNullOrEmpty(dbSettings.DatabaseType) &&
+                    string.Equals(dbSettings.DatabaseType, "Postgresql", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await context.Database.MigrateAsync();
+                }
+                else
+                {
+                    await context.Database.EnsureCreatedAsync();
+                }
+
                 if (!context.Suppliers.Any())
                 {
                     #region Supplier

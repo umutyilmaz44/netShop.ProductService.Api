@@ -7,6 +7,9 @@ using NetShop.ProductService.Application.Interfaces.Context;
 using NetShop.ProductService.Application.Interfaces.Repository.Base;
 using NetShop.ProductService.Infrastructure.Persistence.Repositories.Base;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using persistence.Settings;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace NetShop.ProductService.Infrastructure.Persistence
 {
@@ -14,16 +17,23 @@ namespace NetShop.ProductService.Infrastructure.Persistence
     {
         public static void AddPersistenceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
-            // services.AddDbContext<ApplicationDbContext>(options => 
-            //             options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
-            services.AddDbContext<ApplicationDbContext>(options => {
-                        options.UseInMemoryDatabase(databaseName: "netShopDb")
-                        .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                        // Logging sql 
-                        options.EnableDetailedErrors();
-                        options.EnableSensitiveDataLogging();
-            });
-
+            DbSettings dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>();
+            Console.WriteLine(nameof(DbSettings) + ":");
+            Console.WriteLine(JsonConvert.SerializeObject(dbSettings, Formatting.Indented));
+            if(!string.IsNullOrEmpty(dbSettings.DatabaseType) && string.Equals(dbSettings.DatabaseType,"Postgresql", StringComparison.InvariantCultureIgnoreCase))
+            {
+                services.AddDbContext<ApplicationDbContext>(options => 
+                            options.UseNpgsql(dbSettings.ConnectionString));
+            } else 
+            {           
+                services.AddDbContext<ApplicationDbContext>(options => {
+                            options.UseInMemoryDatabase(databaseName: dbSettings.Database)
+                            .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                            // Logging sql 
+                            options.EnableDetailedErrors();
+                            options.EnableSensitiveDataLogging();
+                });
+            }
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>()) ;  
             services.AddScoped<IUnitOfWork, UnitOfWork>() ;   
         }

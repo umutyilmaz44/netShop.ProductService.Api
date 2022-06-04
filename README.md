@@ -23,7 +23,7 @@
 
 ## To run local docker image with HTTPS:
  * docker container run --rm -p 5010:80 -p 5011:443 --name c_product_service_api \
--e DbSettings__Host=192.168.0.10 -e SsoSettings__Authority=https:/192.168.0.20:5000 -e UseHttps=yes \
+-e DbSettings__Host=192.168.0.10 -e SsoSettings__Authority=https://192.168.0.20:5000 -e UseHttps=yes \
 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=5011 -e ASPNETCORE_Kestrel__Certificates__Default__Password="netProduct123." \
 -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/netShop.ProductService.WebApi.pfx -v ${HOME}/.aspnet/https:/https/ \
 product_service_api

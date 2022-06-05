@@ -25,7 +25,7 @@ RUN dotnet publish -c Release /app/webApi/webApi/*.csproj -o /app/dist
 FROM base AS final
 WORKDIR /app
 
-LABEL maintainer="Umit YILMAZ <umutyilmaz44@gmail.com>"
+LABEL maintainer="Ümit YILMAZ <umutyilmaz44@gmail.com>" name="netShop.ProductService.Api" description="Microservices Architecture (RestAPI) on .NET 5.0 with applying CQRS, Clean Architecture and Event-Driven Communication"
 
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV UseHttps=NO

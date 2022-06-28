@@ -67,7 +67,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ***```postgresqlDataPath```***:/var/lib/postgresql/data
+      - postgresqlDataPath: /var/lib/postgresql/data
     networks:
       - netshop-network
       
@@ -82,7 +82,7 @@ services:
       - DbSettings__Username: postgres
       - DbSettings__Password: password
       - DbSettings__Database: NetShopDb
-      - SsoSettings__Authority=***```ssoAddress```***
+      - SsoSettings__Authority= ssoAddress
       - UseHttps=yes
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTPS_PORT=5011

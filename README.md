@@ -17,7 +17,16 @@
  * Moreover, 
    * ***```ssoAddress```*** word in the this document means that is a sso applicaiton url or service name in cloud network. (ex: htttp://192.168.0.10:5001 OR identityService in docker swarm, kubernetes, openshift, vs...)
    * ***```postgresqlAddress```*** word in the this document means that is a postgresql url or service name in cloud network. (ex: htttp://192.168.0.20 OR dbService in docker swarm, kubernetes, openshift, vs...)
-   * ***```postgresqlDataPath```*** word in the this document means that is your persist postgresql data's path (ex: /Users/username/db/data)
+   * ***```postgresqlDataPath```*** word in the this document means that is your persist postgresql data's path (ex: ${HOME}/netShop/productService/db/data)
+
+ ## To Work With Postgresql
+ * cd infrastructure/persistence/
+ * ASPNETCORE_ENVIRONMENT=Development dotnet ef migrations add [migration name]
+ * ASPNETCORE_ENVIRONMENT=Development dotnet ef database update
+ * docker run -d --rm --network netshop-network -p 5432:5432 \
+-e POSTGRES_PASSWORD=password -e POSTGRES_USER=postgres -e POSTGRES_DB=NetShopDb \
+-v ***```postgresqlDataPath```***:/var/lib/postgresql/data \
+postgres
 
  ## To build docker image:
  * cd projectPath/

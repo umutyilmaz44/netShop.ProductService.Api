@@ -88,6 +88,7 @@ services:
       - "c_db_service"
     restart: on-failure
     environment:
+      - DbSettings__DatabaseType=Postgresql
       - DbSettings__Host=c_db_service
       - DbSettings__Port=5432
       - DbSettings__Username=postgres

@@ -13,7 +13,7 @@
  * Containerized Application
  
  **NOTICE:** 
- * This project needs to a sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]**
+ * This project needs to a sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]** in the sso config
  * Moreover, 
    * ***```ssoAddress```*** word in the this document means that is a sso applicaiton url or service name in cloud network. (ex: htttp://192.168.0.10:5001 OR identityService in docker swarm, kubernetes, openshift, vs...)
    * ***```postgresqlAddress```*** word in the this document means that is a postgresql url or service name in cloud network. (ex: htttp://192.168.0.20 OR dbService in docker swarm, kubernetes, openshift, vs...)
@@ -65,6 +65,8 @@ uyilmaz/product_service_api
 ## To run docker app with local docker-compose:
 * docker-compose up
 ```yml
+version: '3.7'
+
 services:
   c_db_service:
     image: postgres
@@ -76,7 +78,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgresqlDataPath: /var/lib/postgresql/data
+      - postgresqlDataPath:/var/lib/postgresql/data
     networks:
       - netshop-network
       
@@ -88,9 +90,9 @@ services:
     environment:
       - DbSettings__Host=c_db_service
       - DbSettings__Port=5432
-      - DbSettings__Username: postgres
-      - DbSettings__Password: password
-      - DbSettings__Database: NetShopDb
+      - DbSettings__Username=postgres
+      - DbSettings__Password=password
+      - DbSettings__Database=NetShopDb
       - SsoSettings__Authority= ssoAddress
       - UseHttps=yes
       - ASPNETCORE_URLS=https://+;http://+
@@ -104,6 +106,9 @@ services:
       - ${HOME}/.aspnet/https:/https/
     networks:
       - netshop-network
+
+networks:
+  netshop-network: {}
 ```
 
 ## NOTICE :

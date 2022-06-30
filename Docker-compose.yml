@@ -1,11 +1,32 @@
 version: '3.7'
 
 services:
+  c_db_service:
+    image: postgres
+    restart: on-failure
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres 
+      - POSTGRES_DB=NetShopDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - /Users/devos/Projects/netCore-Projects/netShop/ProductService.Db/Data:/var/lib/postgresql/data
+    networks:
+      - netshop-network
   c_product_service_api:
     image: product_service_api
+    depends_on:
+      - "c_db_service"
+    restart: on-failure
     environment:
-      - DbSettings__Host=177.10.10.1 
-      - SsoSettings__Authority=https://8.8.8.8:5000
+      - DbSettings__DatabaseType=Postgresql
+      - DbSettings__Host=c_db_service 
+      - DbSettings__Port=5432
+      - DbSettings__Username=postgres
+      - DbSettings__Password=password
+      - DbSettings__Database=NetShopDb
+      - SsoSettings__Authority=https://localhost:5001
       - UseHttps=yes
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_HTTPS_PORT=5011
@@ -16,3 +37,8 @@ services:
       - "5011:443"
     volumes:
       - ${HOME}/.aspnet/https:/https/
+    networks:
+      - netshop-network
+  
+networks:
+  netshop-network: {}

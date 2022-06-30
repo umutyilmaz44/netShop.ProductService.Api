@@ -134,7 +134,7 @@ namespace NetShop.ProductService.Application.Interfaces.Repository.Extensions
             }
             if (mc != null)
             {
-                PropertyInfo pi;
+                //PropertyInfo pi;
                 Type entityType = typeof(T);
                 String methodName = string.Empty;
 

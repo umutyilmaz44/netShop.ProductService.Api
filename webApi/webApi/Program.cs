@@ -53,7 +53,9 @@ namespace NetShop.ProductService.WebApi
                             .ReadFrom.Configuration(serilogConfiguration(hostEnv))
                             .CreateLogger();
 
-            host = await host.SeedData(configuration(hostEnv));
+            host = await host.MigrateDatabaseAsync(configuration(hostEnv));
+            host = await host.SeedDataAsync(configuration(hostEnv));
+
             host.Run();
         }
 

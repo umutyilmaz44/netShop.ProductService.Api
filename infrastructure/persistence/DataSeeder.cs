@@ -13,24 +13,11 @@ namespace NetShop.ProductService.Infrastructure.Persistence
 {
     public static class DataSeeder
     {
-        public static async Task<IHost> SeedData(this IHost host, IConfiguration configuration)
+        public static async Task<IHost> SeedDataAsync(this IHost host, IConfiguration configuration)
         {
             using (var scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
                 var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-
-                DbSettings dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>();
-
-                if (!string.IsNullOrEmpty(dbSettings.DatabaseType) &&
-                    string.Equals(dbSettings.DatabaseType, "Postgresql", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    await context.Database.MigrateAsync();
-                }
-                else
-                {
-                    await context.Database.EnsureCreatedAsync();
-                }
 
                 if (!context.Suppliers.Any())
                 {
@@ -38,50 +25,50 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Suppliers.Add(new Domain.Entities.Supplier()
                     {
                         Id = Guid.NewGuid(),
-                        supplierName = "Woonenzo",
-                        description = "Woonenzo Eindhoven",
-                        email = "info@woonenzo.nl",
-                        fax = "+31 088 188 18 18",
-                        phone = "+31 06 34 44 99 00",
-                        website = "woonenzo.nl"
+                        supplierName = "A Company",
+                        description = "A Company Tech",
+                        email = "info@a_company.com",
+                        fax = "+00 111 222 33 44",
+                        phone = "+00 111 222 33 45",
+                        website = "a_company.com"
                     });
 
                     context.Suppliers.Add(new Domain.Entities.Supplier()
                     {
                         Id = Guid.NewGuid(),
-                        supplierName = "Mantis",
-                        description = "Mantis Ankara",
-                        email = "info@mantis.com.tr",
-                        fax = "+90 312 222 33 44",
-                        phone = "+90 06 06 44 23 31",
-                        website = "mantis.com.tr"
+                       supplierName = "B Company",
+                        description = "B Company Tech",
+                        email = "info@b_company.com",
+                        fax = "+00 888 555 77 22",
+                        phone = "+00 888 555 77 23",
+                        website = "b_company.com"
                     });
 
                     context.Suppliers.Add(new Domain.Entities.Supplier()
                     {
                         Id = Guid.NewGuid(),
-                        supplierName = "VHS",
-                        description = "VHS Ositm",
-                        email = "info@vhs.com.tr",
-                        fax = "+90 312 444 55 66",
-                        phone = "+90 12 23 34 45 56",
-                        website = "vhs.com.tr"
+                        supplierName = "C Company",
+                        description = "C Company Tech",
+                        email = "info@c_company.com",
+                        fax = "+00 444 888 11 66",
+                        phone = "+00 444 888 11 68",
+                        website = "c_company.com"
                     });
 
-                    Supplier supplierWoonenzo = context.ChangeTracker.Entries<Supplier>()
+                    Supplier supplierA = context.ChangeTracker.Entries<Supplier>()
                                                .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added)
                                                .Select(s => s.Entity as Supplier)
-                                               .Where(t => t.supplierName == "Woonenzo")
+                                               .Where(t => t.supplierName == "A Company")
                                                .FirstOrDefault();
-                    Supplier supplierMantis = context.ChangeTracker.Entries<Supplier>()
+                    Supplier supplierB = context.ChangeTracker.Entries<Supplier>()
                                                .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added)
                                                .Select(s => s.Entity as Supplier)
-                                               .Where(t => t.supplierName == "Mantis")
+                                               .Where(t => t.supplierName == "B Company")
                                                .FirstOrDefault();
-                    Supplier supplierVhs = context.ChangeTracker.Entries<Supplier>()
+                    Supplier supplierC = context.ChangeTracker.Entries<Supplier>()
                                                .Where(x => x.State == Microsoft.EntityFrameworkCore.EntityState.Added)
                                                .Select(s => s.Entity as Supplier)
-                                               .Where(t => t.supplierName == "VHS")
+                                               .Where(t => t.supplierName == "C Company")
                                                .FirstOrDefault();
                     #endregion
 
@@ -449,7 +436,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookPro.Id,
                         productCode = "P001",
                         productName = "Apple Macbook Pro 13`",
@@ -460,7 +447,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookPro.Id,
                         productCode = "P002",
                         productName = "Apple Macbook Pro 15`",
@@ -471,7 +458,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookPro.Id,
                         productCode = "P003",
                         productName = "Apple Macbook Pro 17`",
@@ -482,7 +469,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookPro.Id,
                         productCode = "P004",
                         productName = "Apple Macbook Pro 19`",
@@ -493,7 +480,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         productCode = "P005",
                         brandModelId = brandModelMacbookAir.Id,
                         productName = "Apple Macbook Air 13`",
@@ -504,7 +491,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookAir.Id,
                         productCode = "P006",
                         productName = "Apple Macbook Air 15`",
@@ -515,7 +502,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookAir.Id,
                         productCode = "P007",
                         productName = "Apple Macbook Air 17`",
@@ -526,7 +513,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelMacbookAir.Id,
                         productCode = "P008",
                         productName = "Apple Macbook Air 19`",
@@ -537,7 +524,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelZeenbookA8.Id,
                         productCode = "P009",
                         productName = "Asus Zenbook A8",
@@ -548,7 +535,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierWoonenzo.Id,
+                        supplierId = supplierA.Id,
                         brandModelId = brandModelZeenbookA8.Id,
                         productCode = "P0010",
                         productName = "Asus Zenbook A9",
@@ -559,7 +546,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelZeenbookA11.Id,
                         productCode = "P0011",
                         productName = "Asus Zenbook A11",
@@ -570,7 +557,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelLenovoE15.Id,
                         productCode = "P0012",
                         productName = "Lenovo E15",
@@ -581,7 +568,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelHp15_DW3017NT.Id,
                         productCode = "P0013",
                         productName = "HP 15-DW3017NT",
@@ -592,7 +579,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelHp15S_FQ2050NT.Id,
                         productCode = "P0014",
                         productName = "HP 15S-FQ2050NT",
@@ -603,7 +590,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelDell3510.Id,
                         productCode = "P0015",
                         productName = "Dell 3510-N011L351015EMEA_U I5-10210U",
@@ -614,7 +601,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelDellVostro3400.Id,
                         productCode = "P0016",
                         productName = "Dell Vostro 3400",
@@ -625,7 +612,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelHpZbookFIREFLY15.Id,
                         productCode = "P0017",
                         productName = "Hp Zbook FIREFLY15 1J3P7EA06 I7-10510U",
@@ -636,7 +623,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
 
                         brandModelId = brandModelLenovoV15IIL.Id,
                         productCode = "P0018",
@@ -648,7 +635,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelAsusX515JP.Id,
                         productCode = "P0019",
                         productName = "Asus X515JP EJ250A13",
@@ -659,7 +646,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierMantis.Id,
+                        supplierId = supplierB.Id,
                         brandModelId = brandModelLenovoIdeapad3.Id,
                         productCode = "P0020",
                         productName = "Lenovo Ideapad 3",
@@ -670,7 +657,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelILifeZEDAirCX7.Id,
                         productCode = "P0021",
                         productName = "I-Life ZED Air CX7",
@@ -681,7 +668,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelAcerExtensa15.Id,
                         productCode = "P0022",
                         productName = "Acer Extensa 15",
@@ -692,7 +679,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelLenovoIdeapad5.Id,
                         productCode = "P0023",
                         productName = "Lenovo IdeaPad 5",
@@ -703,7 +690,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelAsusROG_Strix_G513IH_HN002.Id,
                         productCode = "P0024",
                         productName = "Asus ROG Strix G513IH-HN002",
@@ -714,7 +701,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelLenovoIdeaPad_S145_15API.Id,
                         productCode = "P0025",
                         productName = "Lenovo IdeaPad S145-15API",
@@ -725,7 +712,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     context.Products.Add(new Domain.Entities.Product()
                     {
                         Id = Guid.NewGuid(),
-                        supplierId = supplierVhs.Id,
+                        supplierId = supplierC.Id,
                         brandModelId = brandModelZeenbookA7.Id,
                         productCode = "P0026",
                         productName = "Asus Zenbook A7",
@@ -735,7 +722,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence
                     });
                     #endregion
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
 

@@ -13,7 +13,9 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
 
         public TContext CreateDbContext(string[] args)
         {
-            var basePath = Directory.GetCurrentDirectory() + string.Format("{0}..{0}..{0}webApi{0}webApi", Path.DirectorySeparatorChar);
+            var basePath = Directory.GetCurrentDirectory() + string.Format("{0}..{0}..{0}webApi{0}webApi{0}configurations", Path.DirectorySeparatorChar);
+            Console.WriteLine($"0- AspNetCoreEnvironmentg: '{ Environment.GetEnvironmentVariable(AspNetCoreEnvironment)}'.");
+            
             return Create(basePath, Environment.GetEnvironmentVariable(AspNetCoreEnvironment));
         }
 
@@ -21,7 +23,7 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
 
         private TContext Create(string basePath, string environmentName)
         {
-            
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
@@ -30,12 +32,20 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connectionString = configuration.GetConnectionString(ConnectionStringName);
-
-            return Create(connectionString);
+            string Host = configuration["DbSettings:Host"];
+            string Port = configuration["DbSettings:Port"];
+            string Username = configuration["DbSettings:Username"];
+            string Password = configuration["DbSettings:Password"];
+            string Database = configuration["DbSettings:Database"];
+            string DatabaseType = configuration["DbSettings:DatabaseType"];
+            bool isPostgresql = string.Equals(DatabaseType, "Postgresql", StringComparison.InvariantCultureIgnoreCase);
+            var connectionString = $"Host={Host};Port={Port};Username={Username};Password={Password};Database={Database};";
+            //configuration.GetConnectionString(ConnectionStringName);
+            Console.WriteLine($"1- DesignTimeDbContextFactoryBase.Create(string): Connection string: '{connectionString}'. DatabaseType: '{DatabaseType}'");
+            return Create(connectionString, isPostgresql);
         }
 
-        private TContext Create(string connectionString)
+        private TContext Create(string connectionString, bool isPostgresql)
         {
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -46,8 +56,16 @@ namespace NetShop.ProductService.Infrastructure.Persistence.Content
 
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
 
-            //optionsBuilder.UseNpgsql(connectionString);
-            optionsBuilder.UseInMemoryDatabase(databaseName: "netShopDb");
+            if (isPostgresql)
+            {
+                Console.WriteLine($"2- DbConnection has stared for 'isPostgresql'");
+                optionsBuilder.UseNpgsql(connectionString);
+            }
+            else
+            {
+                Console.WriteLine($"2- DbConnection has stared for 'InMemory'");
+                optionsBuilder.UseInMemoryDatabase(databaseName: "netShopDb");
+            }
 
             return CreateNewInstance(optionsBuilder.Options);
         }

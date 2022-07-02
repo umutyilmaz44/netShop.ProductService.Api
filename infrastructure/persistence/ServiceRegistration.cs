@@ -10,16 +10,19 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using persistence.Settings;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace NetShop.ProductService.Infrastructure.Persistence
 {
     public static class ServiceRegistration
     {
         public static void AddPersistenceRegistration(this IServiceCollection services, IConfiguration configuration)
-        {
+        {            
             DbSettings dbSettings = configuration.GetSection(nameof(DbSettings)).Get<DbSettings>();
-            Console.WriteLine(nameof(DbSettings) + ":");
-            Console.WriteLine(JsonConvert.SerializeObject(dbSettings, Formatting.Indented));
+
+            Log.Debug($"{nameof(DbSettings)}: {Environment.NewLine}{JsonConvert.SerializeObject(dbSettings, Formatting.Indented)}");
+            
             if(!string.IsNullOrEmpty(dbSettings.DatabaseType) && string.Equals(dbSettings.DatabaseType,"Postgresql", StringComparison.InvariantCultureIgnoreCase))
             {
                 services.AddDbContext<ApplicationDbContext>(options => 

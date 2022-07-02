@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using application.Interfaces.Common;
@@ -21,6 +22,7 @@ using NetShop.ProductService.Application;
 using NetShop.ProductService.Infrastructure.Persistence;
 using NetShop.ProductService.WebApi.Middlewares;
 using Newtonsoft.Json;
+using Serilog;
 using webApi.Middlewares;
 using webApi.Settings;
 
@@ -30,22 +32,21 @@ namespace NetShop.ProductService.WebApi
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
+        public IConfiguration configuration { get; }
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddApplicationRegistration();
-            services.AddPersistenceRegistration(Configuration);
+            services.AddPersistenceRegistration(configuration);
 
-            SsoSettings ssoSettings = Configuration.GetSection(nameof(SsoSettings)).Get<SsoSettings>();
+            SsoSettings ssoSettings = configuration.GetSection(nameof(SsoSettings)).Get<SsoSettings>();
             
-            Console.WriteLine(nameof(SsoSettings) + ":");
-            Console.WriteLine(JsonConvert.SerializeObject(ssoSettings, Formatting.Indented));
-
+            Log.Debug($"{nameof(SsoSettings)}: {Environment.NewLine}{JsonConvert.SerializeObject(ssoSettings, Formatting.Indented)}");
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
@@ -79,13 +80,13 @@ namespace NetShop.ProductService.WebApi
                         //Eğer Token bilgisi yanlışsa buraya düşecek.
                         OnAuthenticationFailed = _ =>
                         {
-                            Console.WriteLine($"Exception:{_.Exception.Message}");
+                            Log.Error($"Exception:{_.Exception.Message}");
                             return Task.CompletedTask;
                         },
                         //Eğer token bilgisi doğruysa buraya düşecek.
                         OnTokenValidated = _ =>
                         {
-                            Console.WriteLine($"Login Success:{_.Principal.Identity}");
+                            Log.Debug($"Login Success:{_.Principal.Identity}");
                             return Task.CompletedTask;
                         },
                     };
@@ -156,11 +157,11 @@ namespace NetShop.ProductService.WebApi
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
-            logger.LogDebug("UseHttps: " + Configuration["UseHttps"].ToUpper());
-            if (!String.IsNullOrEmpty(Configuration["UseHttps"]) && Configuration["UseHttps"].ToUpper() == "YES")
+            logger.LogDebug("UseHttps: " + configuration["UseHttps"].ToUpper());
+            if (!String.IsNullOrEmpty(configuration["UseHttps"]) && configuration["UseHttps"].ToUpper() == "YES")
             {
                 app.UseHsts();
                 app.UseHttpsRedirection();

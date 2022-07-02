@@ -45,16 +45,17 @@ namespace NetShop.ProductService.WebApi
                 .Build();
 
             IWebHostEnvironment hostEnv = host.Services.GetRequiredService<IWebHostEnvironment>();
-           
-            Console.WriteLine($"Environment['ASPNETCORE_ENVIRONMENT'] = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
-            Console.WriteLine($"IWebHostEnvironment['EnvironmentName'] = {hostEnv.EnvironmentName}");
-           
+                      
             Log.Logger = new LoggerConfiguration()
                             .ReadFrom.Configuration(serilogConfiguration(hostEnv))
                             .CreateLogger();
+            ILogger<Program> logger = host.Services.GetService<ILogger<Program>>();
 
-            host = await host.MigrateDatabaseAsync(configuration(hostEnv));
-            host = await host.SeedDataAsync(configuration(hostEnv));
+            logger.LogDebug($"Environment['ASPNETCORE_ENVIRONMENT'] = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+            logger.LogDebug($"IWebHostEnvironment['EnvironmentName'] = {hostEnv.EnvironmentName}");
+            
+            host = await host.MigrateDatabaseAsync(configuration(hostEnv),logger);
+            host = await host.SeedDataAsync(configuration(hostEnv), logger);
 
             host.Run();
         }
@@ -69,15 +70,17 @@ namespace NetShop.ProductService.WebApi
                     config.SetBasePath(System.IO.Directory.GetCurrentDirectory())
                             .AddJsonFile($"Configurations/appsettings.json", optional: false)
                             .AddJsonFile($"Configurations/appsettings.{env.EnvironmentName}.json", optional: true)
+                            .AddJsonFile($"Configurations/serilog.json", optional: false)
+                            .AddJsonFile($"Configurations/serilog.{env.EnvironmentName}.json", optional: true)
                             .AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                            //.UseConfiguration(configuration)
-                            .UseStartup<Startup>()
+                            //.UseConfiguration(configuration)                            
                             .ConfigureLogging(c => c.ClearProviders())
-                            .UseSerilog();
+                            .UseSerilog()
+                            .UseStartup<Startup>();
                 });
         }
     }

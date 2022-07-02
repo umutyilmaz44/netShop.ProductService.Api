@@ -8,12 +8,13 @@ using NetShop.ProductService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using persistence.Settings;
+using Microsoft.Extensions.Logging;
 
 namespace NetShop.ProductService.Infrastructure.Persistence
 {
     public static class DataSeeder
     {
-        public static async Task<IHost> SeedDataAsync(this IHost host, IConfiguration configuration)
+        public static async Task<IHost> SeedDataAsync(this IHost host, IConfiguration configuration, ILogger logger)
         {
             using (var scope = host.Services.CreateScope())
             {

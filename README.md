@@ -13,7 +13,7 @@
  * Containerized Application
  
  **NOTICE:** 
- * This project needs to a sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]** in the sso config
+ * This project needs to an sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]** in the sso config
  * Moreover, 
    * ***```ssoAddress```*** word in the this document means that is a sso applicaiton url or service name in cloud network. (ex: htttp://192.168.0.10:5001 OR identityService in docker swarm, kubernetes, openshift, vs...)
    * ***```postgresqlAddress```*** word in the this document means that is a postgresql url or service name in cloud network. (ex: htttp://192.168.0.20 OR dbService in docker swarm, kubernetes, openshift, vs...)

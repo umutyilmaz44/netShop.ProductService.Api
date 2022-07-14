@@ -1,4 +1,4 @@
-# netShop.ProductService
+# netShop.ProductService.Api
 ## Microservices Architecture (RestAPI) on .NET 5.0 with applying CQRS, Clean Architecture and Event-Driven Communication
 
  which includes; 
@@ -13,9 +13,9 @@
  * Containerized Application
  
  **NOTICE:** 
- * This project needs to a sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]** in the sso config
+ * This project needs to an sso application (ex: identityserver4) for authentication and authorization. You must set **ApiResource="ProductService"**, **ApiScopes=["ProductService.Write","ProductService.Read"]** in the sso config
  * Moreover, 
-   * ***```ssoAddress```*** word in the this document means that is a sso applicaiton url or service name in cloud network. (ex: htttp://192.168.0.10:5001 OR identityService in docker swarm, kubernetes, openshift, vs...)
+   * ***```ssoAddress```*** word in the this document means that is an sso applicaiton url or service name in cloud network. (ex: htttp://192.168.0.10:5001 OR identityService in docker swarm, kubernetes, openshift, vs...)
    * ***```postgresqlAddress```*** word in the this document means that is a postgresql url or service name in cloud network. (ex: htttp://192.168.0.20 OR dbService in docker swarm, kubernetes, openshift, vs...)
    * ***```postgresqlDataPath```*** word in the this document means that is your persist postgresql data's path (ex: ${HOME}/netShop/productService/db/data)
 
@@ -113,7 +113,7 @@ networks:
 ```
 
 ## NOTICE :
-* You can change certifitaion passsword {netProduct123.} and 5010, 5011 ports what you want.
+* You can change certification passsword {netProduct123.} and 5010, 5011 ports what you want.
 
 * ALL PARAMETERS OF THE APPLICATION HAS DESCRIBED ON MY DOCKER HUB IMAGE. FOR DETAIL, YOU CAN VISIT [uyilmaz/netshop_product_service_api](https://hub.docker.com/r/uyilmaz/netshop_product_service_api).
  

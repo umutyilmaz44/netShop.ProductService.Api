@@ -41,23 +41,34 @@ namespace NetShop.ProductService.WebApi
 
         public static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args)
-                .Build();
+            try
+            {
+                var host = CreateHostBuilder(args)
+                    .Build();
 
-            IWebHostEnvironment hostEnv = host.Services.GetRequiredService<IWebHostEnvironment>();
-                      
-            Log.Logger = new LoggerConfiguration()
-                            .ReadFrom.Configuration(serilogConfiguration(hostEnv))
-                            .CreateLogger();
-            ILogger<Program> logger = host.Services.GetService<ILogger<Program>>();
+                IWebHostEnvironment hostEnv = host.Services.GetRequiredService<IWebHostEnvironment>();
+                        
+                Log.Logger = new LoggerConfiguration()
+                                .ReadFrom.Configuration(serilogConfiguration(hostEnv))
+                                .CreateLogger();
+                ILogger<Program> logger = host.Services.GetService<ILogger<Program>>();
 
-            logger.LogDebug($"Environment['ASPNETCORE_ENVIRONMENT'] = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
-            logger.LogDebug($"IWebHostEnvironment['EnvironmentName'] = {hostEnv.EnvironmentName}");
-            
-            host = await host.MigrateDatabaseAsync(configuration(hostEnv),logger);
-            host = await host.SeedDataAsync(configuration(hostEnv), logger);
+                logger.LogDebug($"Environment['ASPNETCORE_ENVIRONMENT'] = {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+                logger.LogDebug($"IWebHostEnvironment['EnvironmentName'] = {hostEnv.EnvironmentName}");
+                
+                host = await host.MigrateDatabaseAsync(configuration(hostEnv),logger);
+                host = await host.SeedDataAsync(configuration(hostEnv), logger);
 
-            host.Run();
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

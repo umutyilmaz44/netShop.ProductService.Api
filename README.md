@@ -23,14 +23,14 @@
  * cd infrastructure/persistence/
  * ASPNETCORE_ENVIRONMENT=Development dotnet ef migrations add [migration name]
  * ASPNETCORE_ENVIRONMENT=Development dotnet ef database update
- * docker run -d --rm --network netshop-network -p 5432:5432 \
--e POSTGRES_PASSWORD=password -e POSTGRES_USER=postgres -e POSTGRES_DB=NetShopDb \
+ * docker run -d --rm --network netshop-network -p 5432:5432 --name c_netshop_product_service_db \
+-e POSTGRES_PASSWORD=netshop -e POSTGRES_USER=postgres -e POSTGRES_DB=NetShopProductDb \
 -v ***```postgresqlDataPath```***:/var/lib/postgresql/data \
 postgres
 
  ## To build docker image:
  * cd projectPath/
- * docker image build -t product_service_api .
+ * docker image build -t netshop_product_service_api .
 
 ## Create Developer Certification to run image with Https:
  For MacOS
@@ -38,29 +38,29 @@ postgres
  * dotnet dev-certs https --trust
 
 ## To run local docker image with HTTPS:
- * docker container run --rm -p 5010:80 -p 5011:443 --name c_product_service_api \
+ * docker container run --rm -p 5010:80 -p 5011:443 --name c_netshop_product_service_api \
 -e DbSettings__Host=***```postgresqlAddress```*** -e SsoSettings__Authority=***```ssoAddress```*** -e UseHttps=yes \
 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=5011 -e ASPNETCORE_Kestrel__Certificates__Default__Password="netProduct123." \
 -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/netShop.ProductService.WebApi.pfx -v ${HOME}/.aspnet/https:/https/ \
-product_service_api
+netshop_product_service_api
 
 ## To run docker hub image with HTTPS:
- * docker container run --rm -p 5010:80 -p 5011:443 --name c_product_service_api \
+ * docker container run --rm -p 5010:80 -p 5011:443 --name c_netshop_product_service_api \
 -e DbSettings__Host=***```postgresqlAddress```*** -e SsoSettings__Authority=***```ssoAddress```*** -e UseHttps=yes \
 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=5011 -e ASPNETCORE_Kestrel__Certificates__Default__Password="netProduct123." \
 -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/netShop.ProductService.WebApi.pfx -v ${HOME}/.aspnet/https:/https/ \
-uyilmaz/product_service_api
+uyilmaz/netshop_product_service_api
 
 ## To run local docker image with ONLY HTTP:
-* docker container run --rm -p 5010:80 --name c_product_service_api \
+* docker container run --rm -p 5010:80 --name c_netshop_product_service_api \
 -e DbSettings__Host=***```postgresqlAddress```*** -e SsoSettings__Authority=***```ssoAddress```*** -e UseHttps=no \
--e ASPNETCORE_URLS="http://+" product_service_api
+-e ASPNETCORE_URLS="http://+" netshop_product_service_api
 
 ## To run docker hub image with ONLY HTTP:
-* docker container run --rm -p 5010:80 --name c_product_service_api \
+* docker container run --rm -p 5010:80 --name c_netshop_product_service_api \
 -e DbSettings__Host=***```postgresqlAddress```*** -e SsoSettings__Authority=***```ssoAddress```*** -e UseHttps=no \
 -e ASPNETCORE_URLS="http://+" \
-uyilmaz/product_service_api
+uyilmaz/netshop_product_service_api
 
 ## To run docker app with local docker-compose:
 * docker-compose up
@@ -68,13 +68,13 @@ uyilmaz/product_service_api
 version: '3.7'
 
 services:
-  c_db_service:
+  c_netshop_product_service_db:
     image: postgres
     restart: on-failure
     environment:
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=netshop
       - POSTGRES_USER=postgres 
-      - POSTGRES_DB=NetShopDb
+      - POSTGRES_DB=NetShopProductDb
     ports:
       - "5432:5432"
     volumes:
@@ -82,18 +82,18 @@ services:
     networks:
       - netshop-network
       
-  c_product_service_api:
-    image: product_service_api
+  c_netshop_product_service_api:
+    image: netshop_product_service_api
     depends_on:
       - "c_db_service"
     restart: on-failure
     environment:
       - DbSettings__DatabaseType=Postgresql
-      - DbSettings__Host=c_db_service
+      - DbSettings__Host=c_netshop_product_service_db
       - DbSettings__Port=5432
       - DbSettings__Username=postgres
-      - DbSettings__Password=password
-      - DbSettings__Database=NetShopDb
+      - DbSettings__Password=netshop
+      - DbSettings__Database=NetShopProductDb
       - SsoSettings__Authority= ssoAddress
       - UseHttps=yes
       - ASPNETCORE_URLS=https://+;http://+
@@ -115,5 +115,5 @@ networks:
 ## NOTICE :
 * You can change certifitaion passsword {netProduct123.} and 5010, 5011 ports what you want.
 
-* ALL PARAMETERS OF THE APPLICATION HAS DESCRIBED ON MY DOCKER HUB IMAGE. FOR DETAIL, YOU CAN VISIT [uyilmaz/product_service_api](https://hub.docker.com/r/uyilmaz/product_service_api).
+* ALL PARAMETERS OF THE APPLICATION HAS DESCRIBED ON MY DOCKER HUB IMAGE. FOR DETAIL, YOU CAN VISIT [uyilmaz/netshop_product_service_api](https://hub.docker.com/r/uyilmaz/netshop_product_service_api).
  

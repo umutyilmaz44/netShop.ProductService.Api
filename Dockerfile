@@ -29,7 +29,7 @@ LABEL maintainer="Ümit YILMAZ <umutyilmaz44@gmail.com>" name="netShop.ProductSe
 
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV UseHttps=NO
-ENV ASPNETCORE_HTTPS_PORT=5011
+ENV HTTPS_PORT=5011
 ENV DbSettings__Host=127.0.0.1
 ENV DbSettings__Port=5432
 ENV DbSettings__Username=postgres

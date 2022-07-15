@@ -29,8 +29,8 @@ services:
       - DbSettings__Database=NetShopProductDb
       - SsoSettings__Authority=ssoAddress
       - UseHttps=yes
-      - ASPNETCORE_URLS=https://+;http://+
-      - ASPNETCORE_HTTPS_PORT=5011
+      - HTTPS_PORT=5011
+      - ASPNETCORE_URLS=https://+;http://+      
       - ASPNETCORE_Kestrel__Certificates__Default__Password=netProduct123.
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/netShop.ProductService.WebApi.pfx
     ports:

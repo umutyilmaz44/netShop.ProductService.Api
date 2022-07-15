@@ -64,6 +64,7 @@ namespace NetShop.ProductService.WebApi
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly.");
+                throw ex;
             }
             finally
             {
